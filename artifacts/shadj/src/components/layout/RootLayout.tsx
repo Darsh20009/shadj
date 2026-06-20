@@ -1,6 +1,7 @@
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 import { useSessionTracker } from "@/lib/session";
+import { WhatsAppButton } from "@/components/WhatsAppButton";
 
 export function RootLayout({ children }: { children: React.ReactNode }) {
   useSessionTracker();
@@ -11,6 +12,7 @@ export function RootLayout({ children }: { children: React.ReactNode }) {
         {children}
       </main>
       <Footer />
+      <WhatsAppButton />
     </div>
   );
 }
