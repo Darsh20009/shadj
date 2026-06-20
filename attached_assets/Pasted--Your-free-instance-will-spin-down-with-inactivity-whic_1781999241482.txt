@@ -1,0 +1,59 @@
+
+Your free instance will spin down with inactivity, which can delay requests by 50 seconds or more.
+Upgrade now
+June 21, 2026 at 2:38 AM
+failed
+db88ffa
+Correct brand name spelling and website logo issues Update `manifest.json` to fix logo display issues and correct the spelling of the brand name "شَـدِج" across multiple files, including `package.json` to exclude a sandbox build from production. Replit-Commit-Author: Agent Replit-Commit-Session-Id: 35771792-e532-4174-8d0d-e298865029fd Replit-Commit-Checkpoint-Type: full_checkpoint Replit-Commit-Event-Id: 49091b0c-f2d1-4b28-8175-2d7fa7609cba Replit-Commit-Screenshot-Url: https://storage.googleapis.com/screenshot-production-us-central1/4cbf9418-4204-446b-b800-a9c6f14b4e57/35771792-e532-4174-8d0d-e298865029fd/KhRXRlj Replit-Helium-Checkpoint-Created: true
+
+Rollback
+Exited with status 1 while running your code.
+Read our docs for common ways to troubleshoot your deploy.
+
+All logs
+Search
+Search logs
+
+Jun 21, 2:37 AM - 2:41 AM
+GMT+3
+
+
+
+==> Cloning from https://github.com/Darsh20009/shadj
+==> Checking out commit db88ffa4e2fb53706f0612fefe2b6b0a5dc32ac6 in branch main
+==> Using Node.js version 24.14.1 (default)
+==> Docs on specifying a Node.js version: https://render.com/docs/node-version
+==> Running build command 'pnpm install --frozen-lockfile; pnpm run build'...
+> workspace@0.0.0 build /opt/render/project/src
+> pnpm run typecheck && pnpm -r --filter '!@workspace/mockup-sandbox' --if-present run build
+> workspace@0.0.0 typecheck /opt/render/project/src
+> pnpm run typecheck:libs && pnpm -r --filter "./artifacts/**" --filter "./scripts" --if-present run typecheck
+> workspace@0.0.0 typecheck:libs /opt/render/project/src
+> tsc --build
+==> Uploading build...
+==> Uploaded in 11.5s. Compression took 5.0s
+==> Build successful 🎉
+==> Deploying...
+==> Setting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance
+==> Running 'npm run start'
+npm error Missing script: "start"
+npm error
+npm error Did you mean one of these?
+npm error   npm star # Mark your favorite packages
+npm error   npm stars # View packages marked as favorites
+npm error
+npm error To see a list of scripts, run:
+npm error   npm run
+npm error A complete log of this run can be found in: /opt/render/.cache/_logs/2026-06-20T23_40_30_649Z-debug-0.log
+==> Exited with status 1
+==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
+==> Running 'npm run start'
+npm error Missing script: "start"
+npm error
+npm error Did you mean one of these?
+npm error   npm star # Mark your favorite packages
+npm error   npm stars # View packages marked as favorites
+npm error
+npm error To see a list of scripts, run:
+npm error   npm run
+npm error A complete log of this run can be found in: /opt/render/.cache/_logs/2026-06-20T23_40_45_447Z-debug-0.log
