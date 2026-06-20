@@ -7,9 +7,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
           <div>
             <img src="/logo-white.png" alt="شدج" className="h-14 object-contain mb-5" />
-            <p className="text-gray-400 leading-relaxed text-sm max-w-xs">
-              شدج للجرافيك — بنعمل تصاميم بتنطق بالإبداع وتفرق مع كل عميل. شغلنا بيتكلم عن نفسه.
-            </p>
+            <p className="text-gray-400 leading-relaxed text-sm max-w-xs">شدج للجرافيك — بنعمل تصاميم بتنطق بالإبداع وتفرق مع كل عميل.  شغلنا بيتكلم عن نفسه.</p>
             <p className="text-[#F5E6C8]/60 text-xs mt-4">shadj-graphics.space</p>
           </div>
           <div>
