@@ -1,22 +1,30 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Shadj API - شدج
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: portfolio
+    description: Portfolio works
+  - name: orders
+    description: Design orders
+  - name: auth
+    description: Authentication
+  - name: users
+    description: User management
+  - name: analytics
+    description: Site analytics
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +32,393 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /portfolio:
+    get:
+      operationId: listPortfolio
+      tags: [portfolio]
+      summary: List all portfolio works
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: featured
+          in: query
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: List of portfolio works
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PortfolioWork"
+    post:
+      operationId: createPortfolioWork
+      tags: [portfolio]
+      summary: Add a new portfolio work
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PortfolioWorkInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PortfolioWork"
+
+  /portfolio/{id}:
+    get:
+      operationId: getPortfolioWork
+      tags: [portfolio]
+      summary: Get a single portfolio work
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Portfolio work
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PortfolioWork"
+        "404":
+          description: Not found
+    patch:
+      operationId: updatePortfolioWork
+      tags: [portfolio]
+      summary: Update a portfolio work
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PortfolioWorkUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PortfolioWork"
+    delete:
+      operationId: deletePortfolioWork
+      tags: [portfolio]
+      summary: Delete a portfolio work
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+
+  /portfolio/featured:
+    get:
+      operationId: getFeaturedWorks
+      tags: [portfolio]
+      summary: Get featured/highlighted works
+      responses:
+        "200":
+          description: Featured works
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PortfolioWork"
+
+  /portfolio/categories:
+    get:
+      operationId: getCategories
+      tags: [portfolio]
+      summary: Get all portfolio categories with counts
+      responses:
+        "200":
+          description: Categories with counts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CategoryCount"
+
+  /orders:
+    get:
+      operationId: listOrders
+      tags: [orders]
+      summary: List all design orders (admin)
+      responses:
+        "200":
+          description: List of orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Order"
+    post:
+      operationId: createOrder
+      tags: [orders]
+      summary: Submit a new design order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderInput"
+      responses:
+        "201":
+          description: Order submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+
+  /orders/{id}:
+    get:
+      operationId: getOrder
+      tags: [orders]
+      summary: Get an order
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+    patch:
+      operationId: updateOrder
+      tags: [orders]
+      summary: Update order status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderUpdate"
+      responses:
+        "200":
+          description: Updated order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login with email and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: Logged in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Unauthorized
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Logout
+      responses:
+        "200":
+          description: Logged out
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current user
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Unauthorized
+
+  /users:
+    get:
+      operationId: listUsers
+      tags: [users]
+      summary: List all users (admin)
+      responses:
+        "200":
+          description: Users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+    post:
+      operationId: createUser
+      tags: [users]
+      summary: Create a new user (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /users/{id}:
+    patch:
+      operationId: updateUser
+      tags: [users]
+      summary: Update user role or info
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+    delete:
+      operationId: deleteUser
+      tags: [users]
+      summary: Delete user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+
+  /analytics/stats:
+    get:
+      operationId: getStats
+      tags: [analytics]
+      summary: Get site statistics summary
+      responses:
+        "200":
+          description: Site stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteStats"
+
+  /analytics/active-users:
+    get:
+      operationId: getActiveUsers
+      tags: [analytics]
+      summary: Get real-time active users count
+      responses:
+        "200":
+          description: Active users
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ActiveUsers"
+
+  /analytics/visitor-logs:
+    get:
+      operationId: getVisitorLogs
+      tags: [analytics]
+      summary: Get visitor journey logs
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Visitor logs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/VisitorLog"
+
+  /analytics/track:
+    post:
+      operationId: trackEvent
+      tags: [analytics]
+      summary: Track a visitor event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TrackEventInput"
+      responses:
+        "200":
+          description: Tracked
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +429,328 @@ components:
       required:
         - status
 
+    PortfolioWork:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        titleAr:
+          type: string
+        clientName:
+          type: string
+        category:
+          type: string
+        imageUrl:
+          type: string
+        description:
+          type: ["string", "null"]
+        featured:
+          type: boolean
+        designer:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+      required:
+        - id
+        - title
+        - titleAr
+        - clientName
+        - category
+        - imageUrl
+        - featured
+        - createdAt
+
+    PortfolioWorkInput:
+      type: object
+      properties:
+        title:
+          type: string
+        titleAr:
+          type: string
+        clientName:
+          type: string
+        category:
+          type: string
+        imageUrl:
+          type: string
+        description:
+          type: string
+        featured:
+          type: boolean
+        designer:
+          type: string
+      required:
+        - title
+        - titleAr
+        - clientName
+        - category
+        - imageUrl
+
+    PortfolioWorkUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        titleAr:
+          type: string
+        clientName:
+          type: string
+        category:
+          type: string
+        imageUrl:
+          type: string
+        description:
+          type: string
+        featured:
+          type: boolean
+        designer:
+          type: string
+
+    CategoryCount:
+      type: object
+      properties:
+        category:
+          type: string
+        count:
+          type: integer
+      required:
+        - category
+        - count
+
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+        clientName:
+          type: string
+        clientEmail:
+          type: string
+        clientPhone:
+          type: ["string", "null"]
+        designType:
+          type: string
+        description:
+          type: string
+        references:
+          type: ["string", "null"]
+        status:
+          type: string
+          enum: [pending, in_progress, completed, cancelled]
+        budget:
+          type: ["string", "null"]
+        deadline:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+      required:
+        - id
+        - clientName
+        - clientEmail
+        - designType
+        - description
+        - status
+        - createdAt
+
+    OrderInput:
+      type: object
+      properties:
+        clientName:
+          type: string
+        clientEmail:
+          type: string
+        clientPhone:
+          type: string
+        designType:
+          type: string
+        description:
+          type: string
+        references:
+          type: string
+        budget:
+          type: string
+        deadline:
+          type: string
+      required:
+        - clientName
+        - clientEmail
+        - designType
+        - description
+
+    OrderUpdate:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [pending, in_progress, completed, cancelled]
+        notes:
+          type: string
+
+    LoginInput:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
+
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        user:
+          $ref: "#/components/schemas/User"
+      required:
+        - token
+        - user
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum: [admin, designer, writer]
+        avatar:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+      required:
+        - id
+        - name
+        - email
+        - role
+        - createdAt
+
+    UserInput:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+          enum: [admin, designer, writer]
+      required:
+        - name
+        - email
+        - password
+        - role
+
+    UserUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        role:
+          type: string
+          enum: [admin, designer, writer]
+        avatar:
+          type: string
+
+    SiteStats:
+      type: object
+      properties:
+        totalVisitors:
+          type: integer
+        totalWorks:
+          type: integer
+        totalOrders:
+          type: integer
+        pendingOrders:
+          type: integer
+        totalUsers:
+          type: integer
+        monthlyVisitors:
+          type: integer
+      required:
+        - totalVisitors
+        - totalWorks
+        - totalOrders
+        - pendingOrders
+        - totalUsers
+        - monthlyVisitors
+
+    ActiveUsers:
+      type: object
+      properties:
+        count:
+          type: integer
+        sessions:
+          type: array
+          items:
+            $ref: "#/components/schemas/ActiveSession"
+      required:
+        - count
+        - sessions
+
+    ActiveSession:
+      type: object
+      properties:
+        sessionId:
+          type: string
+        currentPage:
+          type: string
+        startedAt:
+          type: string
+        country:
+          type: ["string", "null"]
+      required:
+        - sessionId
+        - currentPage
+        - startedAt
+
+    VisitorLog:
+      type: object
+      properties:
+        id:
+          type: string
+        sessionId:
+          type: string
+        journey:
+          type: array
+          items:
+            type: string
+        startedAt:
+          type: string
+        endedAt:
+          type: ["string", "null"]
+        country:
+          type: ["string", "null"]
+        device:
+          type: ["string", "null"]
+      required:
+        - id
+        - sessionId
+        - journey
+        - startedAt
+
+    TrackEventInput:
+      type: object
+      properties:
+        sessionId:
+          type: string
+        page:
+          type: string
+        event:
+          type: string
+        metadata:
+          type: ["string", "null"]
+      required:
+        - sessionId
+        - page
+        - event
