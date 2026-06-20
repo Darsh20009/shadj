@@ -37,7 +37,17 @@ export function Footer() {
         </div>
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-gray-500 text-xs">
           <p>© {new Date().getFullYear()} شدج للجرافيك — جميع الحقوق محفوظة</p>
-          <p>صُنع بـ ♥ في مصر والسعودية</p>
+          <p>
+            صُنع بحب عبر{" "}
+            <a
+              href="https://qiroxstudio.online"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#F5E6C8] hover:text-white transition-colors font-medium"
+            >
+              كيروكس ستوديو
+            </a>
+          </p>
         </div>
       </div>
     </footer>
