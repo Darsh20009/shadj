@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Link } from "wouter";
+import { useSEO } from "@/hooks/useSEO";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -19,6 +20,20 @@ const VALUES = [
 ];
 
 export default function About() {
+  useSEO({
+    title: "عن شدج — قصة وكالة التصميم الإبداعية",
+    description: "تعرف على شدج للجرافيك — فريق صغير بشغف كبير بالتصميم والإبداع. بنؤمن إن كل علامة تجارية تستحق هوية بصرية تعكسها صح.",
+    keywords: "عن شدج, فريق التصميم, وكالة جرافيك, هوية بصرية, مصممين مصر, مصممين سعودية",
+    canonical: "/about",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "AboutPage",
+      "name": "عن شدج للجرافيك",
+      "url": "https://shadj-graphics.space/about",
+      "description": "وكالة تصميم جرافيك احترافية — فريق إبداعي في مصر والسعودية"
+    }
+  });
+
   const heroRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

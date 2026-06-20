@@ -4,12 +4,31 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGetFeaturedWorks, useGetCategories } from "@workspace/api-client-react";
 import { SplashScreen } from "@/components/SplashScreen";
+import { useSEO } from "@/hooks/useSEO";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const MARQUEE_WORDS = ["إبداع","Design","شدج","Graphic","أسلوب","Identity","حرفة","Vision","جرافيك","Creative"];
 
 export default function Home() {
+  useSEO({
+    title: "وكالة تصميم جرافيك احترافية — مصر والسعودية",
+    description: "شدج للجرافيك — بنعمل تصاميم بتنطق بالإبداع. هوية بصرية، بوسترات، سوشيال ميديا، وتغليف. +46 مشروع ناجح. ابدأ مشروعك دلوقتي!",
+    keywords: "تصميم جرافيك, هوية بصرية, بوستر, سوشيال ميديا, تغليف, شدج, وكالة تصميم, مصر, السعودية",
+    canonical: "/",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "شدج للجرافيك — الرئيسية",
+      "url": "https://shadj-graphics.space/",
+      "description": "وكالة تصميم جرافيك احترافية في مصر والسعودية",
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "الرئيسية", "item": "https://shadj-graphics.space/" }]
+      }
+    }
+  });
+
   const [showSplash, setShowSplash] = useState(() => !sessionStorage.getItem("shadj_splash_seen"));
   const heroRef = useRef<HTMLDivElement>(null);
   const marqueeRef = useRef<HTMLDivElement>(null);

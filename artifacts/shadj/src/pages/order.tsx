@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useCreateOrder } from "@workspace/api-client-react";
+import { useSEO } from "@/hooks/useSEO";
 
 const DESIGN_TYPES = [
   { id: "هوية بصرية", label: "هوية بصرية", icon: "◆", desc: "لوجو + ألوان + فونت + دليل هوية" },
@@ -14,6 +15,20 @@ const DESIGN_TYPES = [
 const BUDGETS = ["أقل من 500 جنيه", "500 - 1000 جنيه", "1000 - 2000 جنيه", "أكثر من 2000 جنيه", "نريد عرض سعر أولاً"];
 
 export default function Order() {
+  useSEO({
+    title: "ابدأ مشروعك — اطلب تصميمك دلوقتي",
+    description: "عايز تصميم احترافي؟ ابعتلنا تفاصيل مشروعك وهنرد عليك في أسرع وقت. هوية بصرية، بوسترات، سوشيال ميديا، وأكتر.",
+    keywords: "طلب تصميم, اطلب جرافيك, تصميم هوية بصرية, بوستر إعلاني, سوشيال ميديا, تغليف, ابدأ مشروعك",
+    canonical: "/order",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "ContactPage",
+      "name": "اطلب تصميمك — شدج للجرافيك",
+      "url": "https://shadj-graphics.space/order",
+      "description": "تواصل مع شدج للجرافيك وابدأ مشروعك الإبداعي"
+    }
+  });
+
   const [step, setStep] = useState(1);
   const [selectedType, setSelectedType] = useState("");
   const [done, setDone] = useState(false);

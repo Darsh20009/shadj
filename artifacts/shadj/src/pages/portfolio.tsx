@@ -2,8 +2,22 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { useListPortfolio, useGetCategories } from "@workspace/api-client-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { useSEO } from "@/hooks/useSEO";
 
 export default function Portfolio() {
+  useSEO({
+    title: "أعمالنا — معرض تصاميم شدج للجرافيك",
+    description: "شوف +46 مشروع حقيقي من تصاميم شدج — هوية بصرية، بوسترات إعلانية، سوشيال ميديا، مطبوعات، وتغليف. كل شغلة بتحكي قصة.",
+    keywords: "أعمال تصميم جرافيك, بوسترات, هوية بصرية, سوشيال ميديا, مطبوعات, تغليف, معرض أعمال",
+    canonical: "/portfolio",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "أعمال شدج للجرافيك",
+      "url": "https://shadj-graphics.space/portfolio",
+      "description": "معرض أعمال شدج للجرافيك — +46 مشروع تصميم احترافي"
+    }
+  });
   const [activeCategory, setActiveCategory] = useState("الكل");
   const [selectedWork, setSelectedWork] = useState<any>(null);
   const [cols, setCols] = useState(3);
