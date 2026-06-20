@@ -7,22 +7,26 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
           <div>
             <img src="/logo-white.png" alt="شدج" className="h-14 object-contain mb-5" />
-            <p className="text-gray-400 leading-relaxed text-sm max-w-xs">شدج للجرافيك — بنعمل تصاميم بتنطق بالإبداع وتفرق مع كل عميل.  شغلنا بيتكلم عن نفسه.</p>
+            <p className="text-gray-400 leading-relaxed text-sm max-w-xs">شَـدِج للجرافيك — بنعمل تصاميم بتنطق بالإبداع وتفرق مع كل عميل. شغلنا بيتكلم عن نفسه.</p>
             <p className="text-[#F5E6C8]/60 text-xs mt-4">shadj-graphics.space</p>
           </div>
           <div>
-            <h3 className="font-bold mb-5 text-[#F5E6C8] tracking-wide text-sm uppercase">الموقع</h3>
+            <h3 className="font-bold mb-5 text-[#F5E6C8] text-sm">الموقع</h3>
             <ul className="space-y-3 text-gray-400 text-sm">
               <li><Link href="/" className="hover:text-white transition-colors">الرئيسية</Link></li>
               <li><Link href="/portfolio" className="hover:text-white transition-colors">شغلنا</Link></li>
-              <li><Link href="/about" className="hover:text-white transition-colors">عن شدج</Link></li>
+              <li><Link href="/about" className="hover:text-white transition-colors">عن شَـدِج</Link></li>
               <li><Link href="/order" className="hover:text-white transition-colors">ابدأ مشروعك</Link></li>
             </ul>
           </div>
           <div>
-            <h3 className="font-bold mb-5 text-[#F5E6C8] tracking-wide text-sm uppercase">تواصل معنا</h3>
+            <h3 className="font-bold mb-5 text-[#F5E6C8] text-sm">تواصل معنا</h3>
             <ul className="space-y-3 text-gray-400 text-sm">
-              <li>shadj123456544321@outlook.com</li>
+              <li>
+                <a href="https://wa.me/201129085243" target="_blank" rel="noopener noreferrer" className="hover:text-green-400 transition-colors">
+                  +20 112 908 5243
+                </a>
+              </li>
               <li>shadj-graphics.space</li>
               <li>مصر · السعودية</li>
             </ul>
@@ -34,7 +38,7 @@ export function Footer() {
           </div>
         </div>
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-gray-500 text-xs">
-          <p>© {new Date().getFullYear()} شدج للجرافيك — جميع الحقوق محفوظة</p>
+          <p>© {new Date().getFullYear()} شَـدِج للجرافيك — جميع الحقوق محفوظة</p>
           <p>
             صُنع بحب عبر{" "}
             <a

@@ -32,7 +32,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
   ];
 
   const handleLogout = () => {
-    logout.mutate({}, { onSuccess: () => setLocation("/login") });
+    logout.mutate(undefined, { onSuccess: () => setLocation("/login") });
   };
 
   const roleLabels: Record<string, string> = {

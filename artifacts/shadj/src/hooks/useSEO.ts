@@ -11,7 +11,7 @@ interface SEOProps {
   structuredData?: object | object[];
 }
 
-const BASE_TITLE = "شدج للجرافيك";
+const BASE_TITLE = "شَـدِج للجرافيك";
 const BASE_URL = "https://shadj-graphics.space";
 const DEFAULT_IMAGE = `${BASE_URL}/opengraph.jpg`;
 

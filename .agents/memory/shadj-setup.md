@@ -1,36 +1,30 @@
 ---
 name: Shadj project setup
-description: Key facts about the shadj-graphics.space agency website project
+description: Full-stack Arabic graphic design agency site — key facts, credentials, auth setup
 ---
 
-# Shadj (شدج) — Graphic Design Agency
+## Stack
+- Frontend: React + Vite + Tailwind (artifacts/shadj)
+- Backend: Express + Drizzle + PostgreSQL (artifacts/api-server)
+- Shared lib: @workspace/api-client-react (lib/api-client-react), @workspace/db (lib/db)
 
-**Domain:** shadj-graphics.space  
-**Admin login:** shadj123456544321@outlook.com / admin123  
-**Admin path:** /admin  
+## Auth
+- Token-based (localStorage key: `shadj_token`)
+- `setAuthTokenGetter(() => localStorage.getItem("shadj_token"))` called in App.tsx
+- Roles: admin, designer, writer → redirect to /admin; client → redirect to /dashboard
+- Password hash: SHA256(password + "shadj_salt_2024")
+- Admin: admin@shadj-graphics.space / admin2024
 
-## Architecture
-- Frontend: `artifacts/shadj/` (React+Vite, previewPath `/`)
-- Backend: `artifacts/api-server/` (Express+Node, previewPath `/api`)
-- DB: PostgreSQL via Drizzle ORM (tables: portfolio_works, orders, users, visitor_logs)
+## Database
+- 46 posters seeded in portfolio_works (image_url: /posters/poster_01-46.png)
+- Admin user seeded (id=1)
+- Migrations: run `cd lib/db && pnpm drizzle-kit push`
 
-## Real poster images
-- 46 PNG files extracted from nested zip to `artifacts/shadj/public/posters/poster_01.png` → `poster_46.png`
-- Served directly from Vite's `public/` folder (no import needed, just `/posters/poster_XX.png`)
-- DB seeded with all 46 works pointing to these real image paths
+## Key files
+- SplashScreen: artifacts/shadj/src/components/SplashScreen.tsx (logo glow + rings animation)
+- Login: unified login/register tabs at /login (admin→/admin, client→/dashboard)
+- Dashboard: artifacts/shadj/src/pages/dashboard.tsx (client order tracking)
+- Auth API: artifacts/api-server/src/routes/auth.ts (login + register + me)
+- Arabic CSS fix: letter-spacing: 0 enforced in index.css
 
-## Logos
-- `/logo-white.png` — white logo on blue bg (for dark nav/dark sections)
-- `/logo-dark.png` — blue logo on white bg (for scrolled/light nav)
-- Imported as `<img src="/logo-white.png">` (not via @assets alias)
-
-## Language
-- Arabic-first RTL, Egyptian dialect ("دلوقتي", "احنا", "بنعمل", "شوف شغلنا")
-- Both Egyptian and Saudi Arabic audiences
-
-## Design system
-- Colors: deep royal blue #3730A3, warm beige #F5E6C8, dark navy #0f0e1a / #1a1a2e
-- Font: Cairo (Arabic) from Google Fonts
-- Splash screen uses sessionStorage key `shadj_splash_seen` to show only once
-
-**Why:** The site uses /public/ folder for images (not @assets alias) because poster files were extracted at build time and need to be served as static assets, not bundled.
+**Why:** Sessions are in-memory (Map) in API server — sessions reset on server restart, users must re-login after restart.

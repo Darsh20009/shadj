@@ -6,7 +6,20 @@
 @custom-variant dark (&:is(.dark *));
 
 html { direction: rtl; }
-body { font-family: 'Cairo', sans-serif; }
+body { font-family: 'Cairo', sans-serif; letter-spacing: 0; }
+
+/* Arabic text must NEVER have letter-spacing — it breaks character connections */
+*:lang(ar), [dir="rtl"] * {
+  letter-spacing: 0 !important;
+  word-spacing: 0.05em;
+}
+
+/* Override Tailwind tracking utilities on Arabic text */
+.tracking-widest, .tracking-wider, .tracking-wide, .tracking-tight, .tracking-tighter {
+  letter-spacing: 0;
+}
+/* Allow tracking only on latin/uppercase labels */
+.tracking-latin { letter-spacing: 0.25em; }
 
 @theme inline {
   --color-background: hsl(var(--background));

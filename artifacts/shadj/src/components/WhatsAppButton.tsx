@@ -9,7 +9,7 @@ export function WhatsAppButton() {
   }, []);
 
   const msg = encodeURIComponent("مرحباً، أريد الاستفسار عن تصميم من شدج للجرافيك 🎨");
-  const phone = "201000000000"; // placeholder
+  const phone = "201129085243";
 
   if (!visible) return null;
 

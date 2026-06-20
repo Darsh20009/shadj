@@ -15,9 +15,6 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
     const seen = sessionStorage.getItem("shadj_splash_seen");
     if (seen) { handleRef.current(); return; }
 
-    const paths = containerRef.current?.querySelectorAll(".draw-path");
-    if (!paths || paths.length === 0) return;
-
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         onComplete: () => {
@@ -26,102 +23,130 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
         }
       });
 
-      // Fade in background
-      tl.fromTo(containerRef.current, { opacity: 0 }, { opacity: 1, duration: 0.5 });
+      gsap.set(".splash-logo", { scale: 0.6, opacity: 0, filter: "blur(20px)" });
+      gsap.set(".splash-ring", { scale: 0, opacity: 0 });
+      gsap.set(".splash-particle", { opacity: 0 });
+      gsap.set(".splash-brand", { opacity: 0, y: 30 });
+      gsap.set(".splash-tagline", { opacity: 0, y: 20 });
+      gsap.set(".splash-line", { scaleX: 0 });
 
-      // Animate each SVG path (draw stroke effect)
-      paths.forEach((path) => {
-        const len = (path as SVGPathElement).getTotalLength?.() || 500;
-        gsap.set(path, { strokeDasharray: len, strokeDashoffset: len });
+      tl.to(containerRef.current, { opacity: 1, duration: 0.3 })
+        .to(".splash-ring", {
+          scale: 1, opacity: 1, duration: 1.2, ease: "elastic.out(1,0.7)", stagger: 0.15
+        }, 0.1)
+        .to(".splash-logo", {
+          scale: 1, opacity: 1, filter: "blur(0px)", duration: 1, ease: "power3.out"
+        }, 0.3)
+        .to(".splash-particle", {
+          opacity: 1, duration: 0.4, stagger: { each: 0.05, from: "random" }
+        }, 0.8)
+        .to(".splash-brand", { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, 0.9)
+        .to(".splash-line", { scaleX: 1, duration: 0.6, ease: "power2.inOut" }, 1.3)
+        .to(".splash-tagline", { opacity: 1, y: 0, duration: 0.6 }, 1.5)
+        .to({}, { duration: 1.8 })
+        .to(containerRef.current, { opacity: 0, scale: 1.04, duration: 0.7, ease: "power2.inOut" });
+
+      gsap.to(".splash-ring-1", { rotation: 360, duration: 18, repeat: -1, ease: "none", transformOrigin: "center" });
+      gsap.to(".splash-ring-2", { rotation: -360, duration: 24, repeat: -1, ease: "none", transformOrigin: "center" });
+      gsap.to(".splash-glow", { scale: 1.3, opacity: 0.15, duration: 2.5, yoyo: true, repeat: -1, ease: "sine.inOut" });
+
+      const particles = document.querySelectorAll(".splash-particle");
+      particles.forEach((p) => {
+        gsap.to(p, {
+          y: gsap.utils.random(-30, 30),
+          x: gsap.utils.random(-20, 20),
+          duration: gsap.utils.random(2, 4),
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+          delay: gsap.utils.random(0, 2),
+        });
       });
-
-      tl.to(paths, {
-        strokeDashoffset: 0,
-        duration: 2.2,
-        stagger: 0.3,
-        ease: "power2.inOut",
-      }, 0.3);
-
-      // Fill with color after draw
-      tl.to(paths, {
-        fill: "#ffffff",
-        duration: 0.5,
-        stagger: 0.1,
-        ease: "power2.out",
-      }, "-=0.5");
-
-      // Subtitle fade in
-      tl.fromTo(".splash-sub", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6 }, "-=0.3");
-
-      // Hold then fade out
-      tl.to({}, { duration: 1.5 });
-      tl.to(containerRef.current, { opacity: 0, scale: 1.02, duration: 0.8, ease: "power2.inOut" });
     });
 
     return () => ctx.revert();
   }, []);
 
+  const particles = Array.from({ length: 24 });
+
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-[200] flex flex-col items-center justify-center cursor-pointer"
-      style={{ background: "radial-gradient(ellipse at center, #1e1b4b 0%, #0a0918 100%)", opacity: 0 }}
+      className="fixed inset-0 z-[200] flex flex-col items-center justify-center cursor-pointer overflow-hidden"
+      style={{ background: "radial-gradient(ellipse at center, #16133a 0%, #0a0816 100%)", opacity: 0 }}
       onClick={skip}
     >
-      {/* Noise texture overlay */}
-      <div className="absolute inset-0 opacity-[0.03]"
-        style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")" }}
-      />
-
-      {/* Animated rings */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="w-96 h-96 rounded-full border border-white/5 animate-ping" style={{ animationDuration: "4s" }} />
-        <div className="absolute w-64 h-64 rounded-full border border-white/8 animate-ping" style={{ animationDuration: "3s", animationDelay: "0.5s" }} />
-      </div>
-
-      {/* Skip button */}
       <button
         onClick={(e) => { e.stopPropagation(); skip(); }}
-        className="absolute top-6 left-6 text-white/30 hover:text-white/80 text-sm border border-white/10 rounded-full px-4 py-1.5 transition-all hover:border-white/30 backdrop-blur-sm"
+        className="absolute top-6 left-6 z-10 text-white/30 hover:text-white/80 text-sm border border-white/10 rounded-full px-4 py-1.5 transition-all hover:border-white/30 backdrop-blur-sm"
       >
         تخطي
       </button>
 
-      {/* Logo icon */}
-      <div className="mb-8">
-        <img src="/logo-white.png" alt="شدج" className="h-16 object-contain opacity-60" />
+      {/* Ambient glow */}
+      <div className="splash-glow absolute w-[600px] h-[600px] rounded-full opacity-10 pointer-events-none"
+        style={{ background: "radial-gradient(circle, #4f46e5 0%, transparent 70%)" }} />
+
+      {/* Floating particles */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {particles.map((_, i) => {
+          const size = Math.random() > 0.7 ? 3 : Math.random() > 0.5 ? 2 : 1;
+          const isGold = Math.random() > 0.6;
+          return (
+            <div
+              key={i}
+              className="splash-particle absolute rounded-full"
+              style={{
+                width: size + "px",
+                height: size + "px",
+                left: (5 + Math.random() * 90) + "%",
+                top: (5 + Math.random() * 90) + "%",
+                background: isGold ? "#F5E6C8" : "#6366f1",
+                boxShadow: isGold ? "0 0 6px #F5E6C8" : "0 0 6px #6366f1",
+              }}
+            />
+          );
+        })}
       </div>
 
-      {/* SVG Draw Animation — شدج */}
-      <svg viewBox="0 0 700 180" className="w-[500px] md:w-[700px] max-w-[90vw]" fill="none" xmlns="http://www.w3.org/2000/svg">
-        {/* Letter ش */}
-        <path className="draw-path" d="M 60 140 C 60 140 50 100 70 80 C 85 65 105 72 110 90 C 115 108 100 130 85 140 C 70 150 55 145 55 130 C 55 115 70 108 85 110" stroke="#F5E6C8" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-        <circle className="draw-path" cx="40" cy="155" r="5" stroke="#F5E6C8" strokeWidth="4" fill="none"/>
-        <circle className="draw-path" cx="60" cy="162" r="5" stroke="#F5E6C8" strokeWidth="4" fill="none"/>
-        <circle className="draw-path" cx="80" cy="157" r="5" stroke="#F5E6C8" strokeWidth="4" fill="none"/>
+      {/* Rotating rings */}
+      <div className="absolute flex items-center justify-center pointer-events-none">
+        <div className="splash-ring splash-ring-1 absolute w-[340px] h-[340px] rounded-full border border-[#F5E6C8]/10" />
+        <div className="splash-ring splash-ring-2 absolute w-[480px] h-[480px] rounded-full"
+          style={{ border: "1px dashed rgba(99,102,241,0.2)" }} />
+        <div className="splash-ring absolute w-[220px] h-[220px] rounded-full border border-white/5" />
+      </div>
 
-        {/* Connector */}
-        <path className="draw-path" d="M 110 90 L 160 90" stroke="#F5E6C8" strokeWidth="5" strokeLinecap="round" fill="none"/>
+      {/* Main logo */}
+      <div className="relative flex flex-col items-center z-10">
+        <div className="splash-logo mb-6 relative">
+          <div className="absolute inset-0 rounded-2xl blur-2xl opacity-40"
+            style={{ background: "radial-gradient(circle, #4f46e5, transparent)" }} />
+          <img
+            src="/logo-white.png"
+            alt="شدج"
+            className="relative h-28 md:h-36 w-auto object-contain drop-shadow-2xl rounded-2xl"
+            style={{ filter: "drop-shadow(0 0 30px rgba(99,102,241,0.5))" }}
+          />
+        </div>
 
-        {/* Letter د */}
-        <path className="draw-path" d="M 160 90 L 200 90 C 220 90 230 100 230 120 C 230 140 215 150 195 145 L 160 135" stroke="#F5E6C8" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+        {/* Brand name */}
+        <div className="splash-brand text-center">
+          <h1 className="text-5xl md:text-7xl font-black text-white mb-1" style={{ fontFamily: "'Cairo', sans-serif", letterSpacing: "0" }}>
+            شـدج
+          </h1>
+        </div>
 
-        {/* Connector */}
-        <path className="draw-path" d="M 230 120 L 270 90" stroke="#F5E6C8" strokeWidth="5" strokeLinecap="round" fill="none"/>
+        {/* Divider line */}
+        <div className="splash-line w-24 h-px my-4 origin-center" style={{ background: "linear-gradient(90deg, transparent, #F5E6C8, transparent)" }} />
 
-        {/* Letter ج */}
-        <path className="draw-path" d="M 270 90 C 270 90 310 80 330 100 C 350 120 340 150 320 160 C 300 170 275 160 270 140 C 265 120 278 108 295 108" stroke="#F5E6C8" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-        <circle className="draw-path" cx="310" cy="175" r="6" stroke="#F5E6C8" strokeWidth="4" fill="none"/>
+        {/* Tagline */}
+        <p className="splash-tagline text-[#F5E6C8]/60 text-sm tracking-[0.3em] font-light uppercase">
+          SHADJ GRAPHICS
+        </p>
+      </div>
 
-        {/* Decorative line */}
-        <path className="draw-path" d="M 50 165 L 350 165" stroke="#F5E6C8" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="4 6" fill="none"/>
-      </svg>
-
-      <p className="splash-sub text-[#F5E6C8]/50 text-sm mt-6 tracking-[0.4em] font-light uppercase opacity-0">
-        SHADJ GRAPHICS
-      </p>
-
-      <p className="splash-sub absolute bottom-6 text-white/20 text-xs opacity-0">
+      <p className="absolute bottom-6 text-white/20 text-xs">
         اضغط في أي مكان للتخطي
       </p>
     </div>

@@ -193,7 +193,7 @@ export default function AdminPortfolio() {
                 </div>
               </div>
               <div className="p-3">
-                <span className="text-[10px] font-bold text-[#3730A3] uppercase tracking-wider">{work.category}</span>
+                <span className="text-[10px] font-bold text-[#3730A3]">{work.category}</span>
                 <p className="font-bold text-[#1a1a2e] text-sm mt-0.5 truncate">{work.titleAr}</p>
                 <p className="text-gray-400 text-xs truncate">{work.clientName}</p>
               </div>

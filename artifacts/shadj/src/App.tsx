@@ -2,6 +2,7 @@ import { Switch, Route, Router as WouterRouter } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { setAuthTokenGetter } from "@workspace/api-client-react";
 
 import { RootLayout } from "@/components/layout/RootLayout";
 import { AdminLayout } from "@/components/admin/AdminLayout";
@@ -11,8 +12,8 @@ import Portfolio from "@/pages/portfolio";
 import About from "@/pages/about";
 import Order from "@/pages/order";
 import Login from "@/pages/login";
+import Dashboard from "@/pages/dashboard";
 
-// Admin pages
 import AdminDashboard from "@/pages/admin/dashboard";
 import AdminPortfolio from "@/pages/admin/portfolio";
 import AdminOrders from "@/pages/admin/orders";
@@ -20,6 +21,8 @@ import AdminUsers from "@/pages/admin/users";
 import AdminAnalytics from "@/pages/admin/analytics";
 
 import NotFound from "@/pages/not-found";
+
+setAuthTokenGetter(() => localStorage.getItem("shadj_token"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -34,8 +37,8 @@ function Router() {
   return (
     <Switch>
       <Route path="/login" component={Login} />
-      
-      {/* Admin Routes */}
+      <Route path="/dashboard" component={Dashboard} />
+
       <Route path="/admin">
         <AdminLayout><AdminDashboard /></AdminLayout>
       </Route>
@@ -52,7 +55,6 @@ function Router() {
         <AdminLayout><AdminAnalytics /></AdminLayout>
       </Route>
 
-      {/* Public Routes */}
       <Route path="/">
         <RootLayout><Home /></RootLayout>
       </Route>
@@ -65,7 +67,7 @@ function Router() {
       <Route path="/order">
         <RootLayout><Order /></RootLayout>
       </Route>
-      
+
       <Route component={NotFound} />
     </Switch>
   );

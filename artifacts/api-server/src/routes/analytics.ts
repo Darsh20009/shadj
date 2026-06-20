@@ -1,7 +1,6 @@
 import { Router } from "express";
-import { db, visitorLogsTable, portfolioWorksTable, ordersTable, usersTable } from "@workspace/db";
-import { eq, sql, gte } from "drizzle-orm";
 import { logger } from "../lib/logger";
+import { PortfolioWorkModel, OrderModel, UserModel, VisitorLogModel } from "../lib/mongodb";
 
 const router = Router();
 
@@ -9,21 +8,16 @@ const activeSessions = new Map<string, { page: string; startedAt: string; countr
 
 router.get("/stats", async (_req, res) => {
   try {
-    const [worksResult] = await db.select({ count: sql<number>`count(*)::int` }).from(portfolioWorksTable);
-    const [ordersResult] = await db.select({ count: sql<number>`count(*)::int` }).from(ordersTable);
-    const [pendingResult] = await db.select({ count: sql<number>`count(*)::int` }).from(ordersTable).where(eq(ordersTable.status, "pending"));
-    const [usersResult] = await db.select({ count: sql<number>`count(*)::int` }).from(usersTable);
-    const [visitorsResult] = await db.select({ count: sql<number>`count(*)::int` }).from(visitorLogsTable);
+    const [totalWorks, totalOrders, pendingOrders, totalUsers, totalVisitors] = await Promise.all([
+      PortfolioWorkModel.countDocuments(),
+      OrderModel.countDocuments(),
+      OrderModel.countDocuments({ status: "pending" }),
+      UserModel.countDocuments(),
+      VisitorLogModel.countDocuments(),
+    ]);
     const monthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-    const [monthlyResult] = await db.select({ count: sql<number>`count(*)::int` }).from(visitorLogsTable).where(gte(visitorLogsTable.startedAt, monthAgo));
-    res.json({
-      totalVisitors: visitorsResult.count,
-      totalWorks: worksResult.count,
-      totalOrders: ordersResult.count,
-      pendingOrders: pendingResult.count,
-      totalUsers: usersResult.count,
-      monthlyVisitors: monthlyResult.count,
-    });
+    const monthlyVisitors = await VisitorLogModel.countDocuments({ startedAt: { $gte: monthAgo } });
+    res.json({ totalVisitors, totalWorks, totalOrders, pendingOrders, totalUsers, monthlyVisitors });
   } catch (err) {
     logger.error(err, "Failed to get stats");
     res.status(500).json({ error: "Internal server error" });
@@ -43,15 +37,15 @@ router.get("/active-users", (_req, res) => {
 router.get("/visitor-logs", async (req, res) => {
   try {
     const limit = req.query.limit ? Number(req.query.limit) : 50;
-    const logs = await db.select().from(visitorLogsTable).orderBy(visitorLogsTable.startedAt).limit(limit);
+    const logs = await VisitorLogModel.find().sort({ startedAt: -1 }).limit(limit);
     res.json(logs.map(l => ({
-      id: String(l.id),
+      id: String(l._id),
       sessionId: l.sessionId,
       journey: Array.isArray(l.journey) ? l.journey : [],
-      startedAt: l.startedAt.toISOString(),
-      endedAt: l.endedAt?.toISOString() || null,
-      country: l.country || null,
-      device: l.device || null,
+      startedAt: l.startedAt instanceof Date ? l.startedAt.toISOString() : String(l.startedAt),
+      endedAt: l.endedAt ? (l.endedAt instanceof Date ? l.endedAt.toISOString() : String(l.endedAt)) : null,
+      country: (l as any).country || null,
+      device: (l as any).device || null,
     })));
   } catch (err) {
     logger.error(err, "Failed to get visitor logs");
@@ -61,41 +55,27 @@ router.get("/visitor-logs", async (req, res) => {
 
 router.post("/track", async (req, res) => {
   try {
-    const { sessionId, page, event, metadata } = req.body;
-    if (!sessionId || !page || !event) return res.status(400).json({ error: "Missing fields" });
+    const { sessionId, page, event } = req.body;
+    if (!sessionId || !page || !event) return void res.status(400).json({ error: "Missing fields" });
 
     if (event === "page_view") {
       if (!activeSessions.has(sessionId)) {
         activeSessions.set(sessionId, { page, startedAt: new Date().toISOString() });
-        const existing = await db.select().from(visitorLogsTable).where(eq(visitorLogsTable.sessionId, sessionId));
-        if (existing.length === 0) {
-          await db.insert(visitorLogsTable).values({
-            sessionId,
-            journey: [page],
-          });
-        } else {
-          const current = existing[0];
-          const journey = Array.isArray(current.journey) ? [...(current.journey as string[]), page] : [page];
-          await db.update(visitorLogsTable).set({ journey }).where(eq(visitorLogsTable.sessionId, sessionId));
-        }
+        await VisitorLogModel.findOneAndUpdate(
+          { sessionId },
+          { $push: { journey: page }, $setOnInsert: { startedAt: new Date() } },
+          { upsert: true, new: true }
+        );
       } else {
         activeSessions.get(sessionId)!.page = page;
-        const existing = await db.select().from(visitorLogsTable).where(eq(visitorLogsTable.sessionId, sessionId));
-        if (existing.length > 0) {
-          const current = existing[0];
-          const journey = Array.isArray(current.journey) ? [...(current.journey as string[]), page] : [page];
-          await db.update(visitorLogsTable).set({ journey }).where(eq(visitorLogsTable.sessionId, sessionId));
-        }
+        await VisitorLogModel.findOneAndUpdate({ sessionId }, { $push: { journey: page } });
       }
     } else if (event === "session_end") {
       activeSessions.delete(sessionId);
-      await db.update(visitorLogsTable).set({ endedAt: new Date() }).where(eq(visitorLogsTable.sessionId, sessionId));
+      await VisitorLogModel.findOneAndUpdate({ sessionId }, { endedAt: new Date() });
     }
 
-    setTimeout(() => {
-      activeSessions.delete(sessionId);
-    }, 5 * 60 * 1000);
-
+    setTimeout(() => activeSessions.delete(sessionId), 5 * 60 * 1000);
     res.json({ status: "ok" });
   } catch (err) {
     logger.error(err, "Failed to track event");

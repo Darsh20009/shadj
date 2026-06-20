@@ -6,7 +6,7 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis
 const PAGE_LABELS: Record<string, string> = {
   "/": "الرئيسية",
   "/portfolio": "أعمالنا",
-  "/about": "عن شدج",
+  "/about": "عن شَـدِج",
   "/order": "ابدأ مشروعك",
   "/login": "تسجيل دخول",
 };
@@ -15,7 +15,7 @@ const COLORS = ["#3730A3", "#6366f1", "#8b5cf6", "#F5E6C8", "#10b981", "#f59e0b"
 
 export default function AdminAnalytics() {
   const { data: logs = [], isLoading: logsLoading } = useGetVisitorLogs({ limit: 100 });
-  const { data: activeUsers } = useGetActiveUsers({ query: { refetchInterval: 5000 } });
+  const { data: activeUsers } = useGetActiveUsers();
 
   // Build page frequency map
   const pageFreq: Record<string, number> = {};
@@ -172,9 +172,9 @@ export default function AdminAnalytics() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-50 bg-gray-50/50">
-                <th className="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">الجلسة</th>
-                <th className="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">وقت البدء</th>
-                <th className="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">رحلة الزائر</th>
+                <th className="px-6 py-3 text-right text-xs font-bold text-gray-500">الجلسة</th>
+                <th className="px-6 py-3 text-right text-xs font-bold text-gray-500">وقت البدء</th>
+                <th className="px-6 py-3 text-right text-xs font-bold text-gray-500">رحلة الزائر</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
