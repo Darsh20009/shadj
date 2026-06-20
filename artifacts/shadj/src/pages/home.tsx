@@ -12,21 +12,79 @@ const MARQUEE_WORDS = ["إبداع","Design","شدج","Graphic","أسلوب","Id
 
 export default function Home() {
   useSEO({
-    title: "وكالة تصميم جرافيك احترافية — مصر والسعودية",
-    description: "شدج للجرافيك — بنعمل تصاميم بتنطق بالإبداع. هوية بصرية، بوسترات، سوشيال ميديا، وتغليف. +46 مشروع ناجح. ابدأ مشروعك دلوقتي!",
-    keywords: "تصميم جرافيك, هوية بصرية, بوستر, سوشيال ميديا, تغليف, شدج, وكالة تصميم, مصر, السعودية",
+    title: "وكالة تصميم جرافيك احترافية | Shadj Graphics",
+    description: "شدج — وكالة تصميم جرافيك احترافية في مصر والسعودية. شدج للجرافيك متخصصة في الهوية البصرية، البوسترات، السوشيال ميديا، والتغليف. +46 مشروع ناجح. ابدأ مشروعك مع شدج دلوقتي!",
+    keywords: "شدج, شدج للجرافيك, shadj, shadj graphics, تصميم جرافيك, هوية بصرية, بوستر, سوشيال ميديا, تغليف, وكالة تصميم, مصر, السعودية, شركة تصميم, مصمم جرافيك",
     canonical: "/",
-    structuredData: {
-      "@context": "https://schema.org",
-      "@type": "WebPage",
-      "name": "شدج للجرافيك — الرئيسية",
-      "url": "https://shadj-graphics.space/",
-      "description": "وكالة تصميم جرافيك احترافية في مصر والسعودية",
-      "breadcrumb": {
-        "@type": "BreadcrumbList",
-        "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "الرئيسية", "item": "https://shadj-graphics.space/" }]
+    structuredData: [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "شدج للجرافيك — الرئيسية",
+        "url": "https://shadj-graphics.space/",
+        "description": "شدج وكالة تصميم جرافيك احترافية في مصر والسعودية",
+        "about": {
+          "@type": "Organization",
+          "name": "شدج للجرافيك",
+          "alternateName": ["Shadj", "شدج", "Shadj Graphics", "shadj للجرافيك"]
+        }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "ما هو شدج؟",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "شدج (Shadj) هي وكالة تصميم جرافيك احترافية متخصصة في الهوية البصرية، البوسترات الإعلانية، تصميم السوشيال ميديا، والتغليف. شدج تخدم عملاء في مصر والسعودية والعالم العربي."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "ما هي خدمات شدج للجرافيك؟",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "شدج للجرافيك تقدم خدمات: تصميم الهوية البصرية والشعارات، البوسترات الإعلانية، تصميم محتوى السوشيال ميديا، تصميم التغليف والعبوات، الحملات الإعلانية، واللوحات الإعلانية."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "كيف أتواصل مع شدج؟",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "يمكنك التواصل مع شدج للجرافيك عبر الموقع الرسمي shadj-graphics.space أو عبر واتساب مباشرةً. شدج متاحة لاستقبال مشاريعك ٢٤ ساعة."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "أين يقع مكتب شدج؟",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "شدج للجرافيك تعمل في مصر والمملكة العربية السعودية، وتخدم عملاء من جميع أنحاء العالم العربي عبر الإنترنت."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "ما الفرق بين شدج وغيرها من وكالات التصميم؟",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "شدج تتميز بأسلوبها الإبداعي الفريد والعربي الأصيل، وتجمع بين الجودة العالية والسرعة في التسليم. +46 مشروع ناجح يشهد على احترافية شدج ومستواها الرفيع."
+            }
+          }
+        ]
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "Brand",
+        "name": "شدج",
+        "alternateName": "Shadj",
+        "url": "https://shadj-graphics.space",
+        "logo": "https://shadj-graphics.space/logo-white.png",
+        "description": "وكالة تصميم جرافيك عربية احترافية"
       }
-    }
+    ]
   });
 
   const [showSplash, setShowSplash] = useState(() => !sessionStorage.getItem("shadj_splash_seen"));
@@ -233,13 +291,65 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ===== SEO BRAND SECTION ===== */}
+      <section className="py-20 bg-white border-t border-gray-100" aria-label="عن شدج للجرافيك">
+        <div className="container mx-auto px-6">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-black text-[#1a1a2e] mb-8 text-center">لماذا تختار شدج؟</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+              {[
+                {
+                  icon: "◆",
+                  title: "شدج وهويتك البصرية",
+                  desc: "شدج للجرافيك تبني لك هوية بصرية متكاملة — شعار، ألوان، خطوط، ودليل هوية يعكس شخصية علامتك التجارية بدقة."
+                },
+                {
+                  icon: "▲",
+                  title: "شدج وتصميم البوسترات",
+                  desc: "بوسترات شدج مش مجرد صور — هي رسائل بصرية بتوقف المشاهد وبتقنعه. صممنا +46 بوستر لعلامات تجارية مختلفة."
+                },
+                {
+                  icon: "●",
+                  title: "شدج والسوشيال ميديا",
+                  desc: "محتوى السوشيال ميديا من شدج يجعل صفحتك تبرز في الزحمة — بتصاميم متناسقة وأسلوب بصري مميز يعزز تواجدك الرقمي."
+                }
+              ].map((item, i) => (
+                <div key={i} className="bg-[#f9f7f4] rounded-2xl p-6">
+                  <div className="text-[#3730A3] text-2xl mb-4 font-black">{item.icon}</div>
+                  <h3 className="font-black text-[#1a1a2e] text-lg mb-3">{item.title}</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* FAQ visible section */}
+            <div className="space-y-4">
+              <h3 className="text-2xl font-black text-[#1a1a2e] mb-6 text-center">أسئلة شائعة عن شدج</h3>
+              {[
+                { q: "ما هو شدج؟", a: "شدج (Shadj) وكالة تصميم جرافيك عربية احترافية متخصصة في الهوية البصرية والبوسترات والسوشيال ميديا والتغليف. شدج تخدم عملاء في مصر والسعودية وجميع أنحاء العالم العربي." },
+                { q: "ما الخدمات التي تقدمها شدج؟", a: "شدج تقدم: تصميم الهوية البصرية، البوسترات الإعلانية، محتوى السوشيال ميديا، تصميم التغليف، الحملات الإعلانية، واللوحات الإعلانية." },
+                { q: "كيف أبدأ مشروعي مع شدج؟", a: "ببساطة — ادخل على صفحة 'ابدأ مشروعك' واملأ التفاصيل وفريق شدج هيتواصل معاك في أسرع وقت." },
+              ].map((faq, i) => (
+                <details key={i} className="bg-[#f9f7f4] rounded-xl p-5 group cursor-pointer">
+                  <summary className="font-bold text-[#1a1a2e] flex justify-between items-center list-none">
+                    <span>{faq.q}</span>
+                    <span className="text-[#3730A3] text-xl group-open:rotate-45 transition-transform">+</span>
+                  </summary>
+                  <p className="mt-3 text-gray-600 leading-relaxed text-sm">{faq.a}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ===== CTA ===== */}
       <section className="py-20 bg-[#F5E6C8]">
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-4xl md:text-5xl font-black text-[#1a1a2e] mb-4">عندك مشروع؟</h2>
-          <p className="text-[#3730A3] text-lg mb-8 font-medium">خلينا نحوله لتحفة بصرية</p>
+          <p className="text-[#3730A3] text-lg mb-8 font-medium">خلينا نحوله لتحفة بصرية مع شدج</p>
           <Link href="/order" className="inline-block bg-[#1a1a2e] text-white px-10 py-4 rounded-full font-black text-lg hover:bg-[#3730A3] transition-colors shadow-xl">
-            اطلب تصميمك دلوقتي
+            اطلب تصميمك من شدج دلوقتي
           </Link>
         </div>
       </section>

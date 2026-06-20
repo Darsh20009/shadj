@@ -26,7 +26,7 @@ export function useSEO({
   structuredData,
 }: SEOProps) {
   useEffect(() => {
-    const fullTitle = `${title} | ${BASE_TITLE}`;
+    const fullTitle = `${BASE_TITLE} — ${title}`;
 
     document.title = fullTitle;
 
