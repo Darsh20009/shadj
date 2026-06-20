@@ -1,0 +1,80 @@
+
+Your free instance will spin down with inactivity, which can delay requests by 50 seconds or more.
+Upgrade now
+June 21, 2026 at 2:50 AM
+failed
+0345203
+Add backend to serve frontend and start script Add a `start` script to the root `package.json` and configure the backend to serve the frontend's static files. Replit-Commit-Author: Agent Replit-Commit-Session-Id: 35771792-e532-4174-8d0d-e298865029fd Replit-Commit-Checkpoint-Type: full_checkpoint Replit-Commit-Event-Id: b1f33928-6bf8-483a-be70-d8230189ae33 Replit-Commit-Screenshot-Url: https://storage.googleapis.com/screenshot-production-us-central1/4cbf9418-4204-446b-b800-a9c6f14b4e57/35771792-e532-4174-8d0d-e298865029fd/KhRXRlj Replit-Helium-Checkpoint-Created: true
+
+Rollback
+Exited with status 1 while running your code.
+Read our docs for common ways to troubleshoot your deploy.
+
+All logs
+Search
+Search logs
+
+Live tail
+
+
+
+==> Downloading cache...
+==> Cloning from https://github.com/Darsh20009/shadj
+==> Checking out commit 034520302ef6418a1c36b8105c5910450fb0a70c in branch main
+==> Downloaded 98MB in 6s. Extraction took 4s.
+==> Using Node.js version 24.14.1 (default)
+==> Docs on specifying a Node.js version: https://render.com/docs/node-version
+==> Running build command 'pnpm install --frozen-lockfile; pnpm run build'...
+> workspace@0.0.0 build /opt/render/project/src
+> pnpm run typecheck && pnpm -r --filter '!@workspace/mockup-sandbox' --if-present run build
+> workspace@0.0.0 typecheck /opt/render/project/src
+> pnpm run typecheck:libs && pnpm -r --filter "./artifacts/**" --filter "./scripts" --if-present run typecheck
+> workspace@0.0.0 typecheck:libs /opt/render/project/src
+> tsc --build
+==> Uploading build...
+==> Uploaded in 11.5s. Compression took 4.5s
+==> Build successful 🎉
+==> Deploying...
+==> Setting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance
+==> Running 'npm run start'
+> workspace@0.0.0 start
+> node artifacts/api-server/dist/index.mjs
+file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:19937
+              throw new PathError(`Missing parameter name at index ${index}`, str);
+                    ^
+PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
+    at consumeUntil (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:19937:21)
+    at parse (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:19962:28)
+    at process2 (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:20073:58)
+    at pathToRegexp (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:20084:7)
+    at Object.match (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:20038:32)
+    at matcher (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:20267:27)
+    at new Layer (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:20274:68)
+    at router8.route (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:20699:21)
+    at app2.route (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:21008:26)
+    at app2.<computed> [as get] (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:21071:26) {
+  originalPath: '*'
+}
+Node.js v24.14.1
+==> Exited with status 1
+==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
+==> Running 'npm run start'
+> workspace@0.0.0 start
+> node artifacts/api-server/dist/index.mjs
+file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:19937
+              throw new PathError(`Missing parameter name at index ${index}`, str);
+                    ^
+PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
+    at consumeUntil (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:19937:21)
+    at parse (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:19962:28)
+    at process2 (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:20073:58)
+    at pathToRegexp (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:20084:7)
+    at Object.match (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:20038:32)
+    at matcher (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:20267:27)
+    at new Layer (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:20274:68)
+    at router8.route (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:20699:21)
+    at app2.route (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:21008:26)
+    at app2.<computed> [as get] (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:21071:26) {
+  originalPath: '*'
+}
+Node.js v24.14.1
