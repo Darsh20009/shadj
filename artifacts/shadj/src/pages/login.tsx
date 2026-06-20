@@ -1,133 +1,105 @@
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { useLogin, useGetMe } from "@workspace/api-client-react";
+import { useState } from "react";
+import { useLogin } from "@workspace/api-client-react";
 import { useLocation } from "wouter";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";
-import { useEffect } from "react";
-import { FcGoogle } from "react-icons/fc";
-import { FaApple } from "react-icons/fa";
-import logoWhite from "@assets/Screenshot_2026-06-20_at_1.20.57_PM_1781954838443.png";
-
-const loginSchema = z.object({
-  email: z.string().email("البريد الإلكتروني غير صالح"),
-  password: z.string().min(1, "كلمة المرور مطلوبة"),
-});
-
-type LoginValues = z.infer<typeof loginSchema>;
 
 export default function Login() {
-  const [, setLocation] = useLocation();
-  const { toast } = useToast();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [, navigate] = useLocation();
   const login = useLogin();
-  const { data: user, isLoading } = useGetMe();
 
-  useEffect(() => {
-    if (user && !isLoading) {
-      setLocation("/admin");
-    }
-  }, [user, isLoading, setLocation]);
-
-  const form = useForm<LoginValues>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  });
-
-  const onSubmit = (data: LoginValues) => {
-    login.mutate({ data }, {
-      onSuccess: () => {
-        setLocation("/admin");
-      },
-      onError: () => {
-        toast({
-          title: "فشل تسجيل الدخول",
-          description: "البريد الإلكتروني أو كلمة المرور غير صحيحة",
-          variant: "destructive"
-        });
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    try {
+      const res = await login.mutateAsync({ data: { email, password } });
+      if (res.token) {
+        localStorage.setItem("shadj_token", res.token);
+        localStorage.setItem("shadj_user", JSON.stringify(res.user));
+        navigate("/admin");
       }
-    });
-  };
+    } catch {
+      setError("البريد أو كلمة المرور غلط — حاول تاني");
+    }
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#1a1a2e] relative overflow-hidden p-6">
-      <div className="absolute inset-0 z-0">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[100px] animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-[30rem] h-[30rem] bg-purple-900/20 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: "2s" }}></div>
-      </div>
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden" style={{background:"radial-gradient(ellipse at 40% 60%, #1e1b4b 0%, #0f0e1a 70%)"}}>
+      {/* BG Grid */}
+      <div className="absolute inset-0 opacity-5" style={{backgroundImage:"radial-gradient(circle, white 1px, transparent 1px)", backgroundSize:"40px 40px"}} />
 
-      <div className="relative z-10 w-full max-w-md bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-10 shadow-2xl">
-        <div className="flex justify-center mb-8">
-          <img src={logoWhite} alt="Shadj" className="h-16 object-contain" />
-        </div>
-        
-        <h2 className="text-2xl font-bold text-white text-center mb-8">تسجيل الدخول للإدارة</h2>
+      {/* Decorative circles */}
+      <div className="absolute top-1/4 right-10 w-64 h-64 rounded-full border border-[#3730A3]/30 animate-pulse" />
+      <div className="absolute bottom-1/4 left-10 w-40 h-40 rounded-full bg-[#3730A3]/10 blur-2xl" />
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-gray-300">البريد الإلكتروني</FormLabel>
-                  <FormControl>
-                    <Input 
-                      placeholder="admin@shadj.com" 
-                      className="bg-white/10 border-white/10 text-white placeholder:text-gray-500 focus:bg-white/20 focus:border-white/30 transition-colors" 
-                      dir="ltr"
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage className="text-red-400" />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-gray-300">كلمة المرور</FormLabel>
-                  <FormControl>
-                    <Input 
-                      type="password" 
-                      placeholder="••••••••" 
-                      className="bg-white/10 border-white/10 text-white placeholder:text-gray-500 focus:bg-white/20 focus:border-white/30 transition-colors" 
-                      dir="ltr"
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage className="text-red-400" />
-                </FormItem>
-              )}
-            />
-            
-            <button 
-              type="submit" 
+      <div className="relative z-10 w-full max-w-md mx-6">
+        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl">
+          <div className="text-center mb-8">
+            <img src="/logo-white.png" alt="شدج" className="h-16 object-contain mx-auto mb-4" />
+            <h1 className="text-2xl font-black text-white">دخول الإدارة</h1>
+            <p className="text-gray-400 text-sm mt-1">للمدراء والمصممين فقط</p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-gray-400 text-sm mb-2 text-right">البريد الإلكتروني</label>
+              <input
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="admin@shadj-graphics.space"
+                required
+                autoComplete="email"
+                className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-[#F5E6C8] transition-colors"
+                dir="ltr"
+              />
+            </div>
+            <div>
+              <label className="block text-gray-400 text-sm mb-2 text-right">كلمة المرور</label>
+              <input
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+                autoComplete="current-password"
+                className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-[#F5E6C8] transition-colors"
+              />
+            </div>
+
+            {error && (
+              <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-red-400 text-sm text-right">
+                {error}
+              </div>
+            )}
+
+            <button
+              type="submit"
               disabled={login.isPending}
-              className="w-full bg-[#F5E6C8] text-[#1a1a2e] py-3 rounded-xl font-bold hover:bg-white transition-colors disabled:opacity-50"
+              className="w-full bg-[#F5E6C8] text-[#1a1a2e] py-4 rounded-xl font-black text-lg hover:bg-white transition-colors disabled:opacity-60 mt-2"
             >
-              {login.isPending ? "جاري الدخول..." : "تسجيل الدخول"}
+              {login.isPending ? "جاري الدخول..." : "دخول"}
             </button>
           </form>
-        </Form>
 
-        <div className="mt-8 pt-8 border-t border-white/10">
-          <div className="grid grid-cols-2 gap-4">
-            <button className="flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white py-2.5 rounded-xl transition-colors text-sm font-medium">
-              <FcGoogle size={20} />
-              Google
-            </button>
-            <button className="flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white py-2.5 rounded-xl transition-colors text-sm font-medium">
-              <FaApple size={20} />
-              Apple
-            </button>
+          <div className="mt-6 flex items-center gap-4">
+            <div className="flex-1 h-px bg-white/10" />
+            <span className="text-gray-500 text-xs">أو</span>
+            <div className="flex-1 h-px bg-white/10" />
           </div>
+
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            {[{label:"Apple",icon:"🍎"},{label:"Google",icon:"G"}].map(s => (
+              <button key={s.label} type="button" className="flex items-center justify-center gap-2 bg-white/5 border border-white/15 rounded-xl py-3 text-white text-sm font-medium hover:bg-white/10 transition-colors">
+                <span>{s.icon}</span>{s.label}
+              </button>
+            ))}
+          </div>
+
+          <p className="text-gray-500 text-xs text-center mt-6">
+            shadj-graphics.space — لوحة تحكم شدج للجرافيك
+          </p>
         </div>
       </div>
     </div>

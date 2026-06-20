@@ -1,0 +1,1 @@
+- [Shadj project setup](shadj-setup.md) — full-stack Arabic graphic design agency site, real posters at /posters/poster_01-46.png, admin login in topic file.

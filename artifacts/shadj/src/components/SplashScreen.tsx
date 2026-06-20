@@ -1,55 +1,99 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
-import logoWhite from "@assets/Screenshot_2026-06-20_at_1.20.57_PM_1781954838443.png";
 
 export function SplashScreen({ onComplete }: { onComplete: () => void }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const logoRef = useRef<HTMLImageElement>(null);
-  
-  const handleCompleteRef = useRef(onComplete);
-  handleCompleteRef.current = onComplete;
+  const textRef = useRef<HTMLDivElement>(null);
+  const circleRef = useRef<HTMLDivElement>(null);
+  const handleRef = useRef(onComplete);
+  handleRef.current = onComplete;
+
+  function skip() {
+    sessionStorage.setItem("shadj_splash_seen", "1");
+    gsap.to(containerRef.current, { opacity: 0, duration: 0.4, onComplete: () => handleRef.current() });
+  }
 
   useEffect(() => {
-    const hasSeen = sessionStorage.getItem("shadj_splash_seen");
-    if (hasSeen) {
-      handleCompleteRef.current();
-      return;
-    }
+    const seen = sessionStorage.getItem("shadj_splash_seen");
+    if (seen) { handleRef.current(); return; }
 
+    const chars = textRef.current?.querySelectorAll(".char") || [];
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         onComplete: () => {
-          sessionStorage.setItem("shadj_splash_seen", "true");
-          handleCompleteRef.current();
+          sessionStorage.setItem("shadj_splash_seen", "1");
+          handleRef.current();
         }
       });
 
-      tl.fromTo(logoRef.current, 
-        { opacity: 0, scale: 0.8 }, 
-        { opacity: 1, scale: 1, duration: 1.5, ease: "power3.out" }
+      tl.fromTo(circleRef.current,
+        { scale: 0, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.8, ease: "back.out(2)" }
       )
-      .to(logoRef.current, { opacity: 0, scale: 1.1, duration: 1, delay: 2, ease: "power2.inOut" })
-      .to(containerRef.current, { opacity: 0, duration: 0.5 });
+      .fromTo(chars,
+        { opacity: 0, y: 40, rotateX: -90 },
+        { opacity: 1, y: 0, rotateX: 0, duration: 0.6, stagger: 0.08, ease: "back.out(1.7)" },
+        "-=0.3"
+      )
+      .to({}, { duration: 1.8 })
+      .to(containerRef.current, { opacity: 0, duration: 0.7, ease: "power2.inOut" });
     }, containerRef);
 
     return () => ctx.revert();
   }, []);
 
   return (
-    <div ref={containerRef} className="fixed inset-0 z-[100] bg-[#1a1a2e] flex flex-col items-center justify-center pointer-events-auto">
-      <button 
-        onClick={() => {
-          sessionStorage.setItem("shadj_splash_seen", "true");
-          handleCompleteRef.current();
-        }}
-        className="absolute top-8 right-8 text-white/50 hover:text-white transition-colors z-10 px-4 py-2 border border-white/20 rounded-full text-sm"
+    <div
+      ref={containerRef}
+      className="fixed inset-0 z-[200] flex flex-col items-center justify-center"
+      style={{ background: "radial-gradient(ellipse at center, #1e1b4b 0%, #0f0e1a 100%)" }}
+    >
+      {/* Particle dots */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {Array.from({ length: 30 }).map((_, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full bg-white/10 animate-pulse"
+            style={{
+              width: Math.random() * 4 + 1 + "px",
+              height: Math.random() * 4 + 1 + "px",
+              top: Math.random() * 100 + "%",
+              left: Math.random() * 100 + "%",
+              animationDelay: Math.random() * 3 + "s",
+              animationDuration: (Math.random() * 3 + 2) + "s",
+            }}
+          />
+        ))}
+      </div>
+
+      <button
+        onClick={skip}
+        className="absolute top-6 left-6 text-white/40 hover:text-white text-sm border border-white/20 rounded-full px-4 py-1.5 transition-colors"
       >
         تخطي
       </button>
-      <div className="relative">
-        <img ref={logoRef} src={logoWhite} alt="Shadj Logo" className="h-32 object-contain" />
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent w-full h-full animate-[shimmer_2s_infinite]" style={{ backgroundSize: "200% 100%" }}></div>
+
+      <div ref={circleRef} className="mb-8 relative">
+        <div className="w-32 h-32 rounded-full border-2 border-[#F5E6C8]/30 flex items-center justify-center">
+          <div className="w-24 h-24 rounded-full border border-[#F5E6C8]/50 flex items-center justify-center">
+            <img src="/logo-white.png" alt="Shadj" className="w-16 h-16 object-contain" />
+          </div>
+        </div>
+        <div className="absolute inset-0 rounded-full border border-[#F5E6C8]/20 animate-ping" style={{ animationDuration: "2s" }} />
       </div>
+
+      <div ref={textRef} className="flex gap-1 perspective-[600px]" dir="rtl">
+        {["ش","ـ","د","ج"].map((c, i) => (
+          <span
+            key={i}
+            className="char text-6xl md:text-8xl font-black text-white"
+            style={{ fontFamily: "'Cairo', sans-serif", display: "inline-block" }}
+          >
+            {c}
+          </span>
+        ))}
+      </div>
+      <p className="text-[#F5E6C8]/60 text-sm mt-4 tracking-widest">SHADJ GRAPHICS</p>
     </div>
   );
 }
