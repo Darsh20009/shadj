@@ -6,7 +6,7 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis
 const PAGE_LABELS: Record<string, string> = {
   "/": "الرئيسية",
   "/portfolio": "أعمالنا",
-  "/about": "عن شَـدِج",
+  "/about": "عن شَـــدِج",
   "/order": "ابدأ مشروعك",
   "/login": "تسجيل دخول",
 };

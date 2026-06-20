@@ -128,7 +128,7 @@ export default function Dashboard() {
             <div className="py-16 text-center">
               <Package size={48} className="text-gray-300 mx-auto mb-4" />
               <h3 className="font-bold text-gray-500 mb-2">لا توجد طلبات بعد</h3>
-              <p className="text-gray-400 text-sm mb-6">ابدأ مشروعك الأول مع شَـدِج الآن!</p>
+              <p className="text-gray-400 text-sm mb-6">ابدأ مشروعك الأول مع شَـــدِج الآن!</p>
               <Link href="/order" className="inline-block bg-[#3730A3] text-white px-6 py-3 rounded-xl font-bold hover:bg-[#1a1a2e] transition-colors">
                 اطلب تصميمك الأول
               </Link>

@@ -72,11 +72,11 @@ export default function About() {
           <div className="about-hero max-w-4xl mx-auto text-center">
             <span className="inline-block text-[#F5E6C8]/70 text-xs font-bold tracking-[0.3em] uppercase mb-8">Our Story</span>
             <h1 className="text-5xl md:text-8xl font-black text-white leading-[0.9] mb-8">
-              شَـدِج<br/>
+              شَـــدِج<br/>
               <span className="text-[#F5E6C8]">قصة إبداع</span>
             </h1>
             <p className="text-gray-300 text-xl leading-loose max-w-2xl mx-auto mb-12">
-              اتأسست شَـدِج من شغفنا بالجرافيك والإبداع. فريق صغير بتصميم ضخم — بنصدق إن كل علامة تجارية تستحق هوية بصرية تعكسها صح.
+              اتأسست شَـــدِج من شغفنا بالجرافيك والإبداع. فريق صغير بتصميم ضخم — بنصدق إن كل علامة تجارية تستحق هوية بصرية تعكسها صح.
             </p>
             <div className="stats-row flex flex-wrap justify-center gap-6">
               {[["٤٦+","مشروع منجز"],["٣٠+","عميل راضي"],["٣+","سنوات خبرة"],["٨+","تخصص"]].map(([n,l]) => (
@@ -102,8 +102,8 @@ export default function About() {
               <span className="text-[#3730A3] font-bold text-xs tracking-[0.25em] uppercase mb-4 block">قصتنا</span>
               <h2 className="text-4xl md:text-5xl font-black text-[#1a1a2e] mb-8 leading-tight">من الشغف<br/>للاحتراف</h2>
               <div className="space-y-5 text-gray-600 leading-loose text-[17px]">
-                <p>شَـدِج بدأت من غرفة صغيرة وحلم كبير — إننا نثبت إن الجرافيك المصري والعربي يقدر يكون في مستوى عالمي.</p>
-                <p>بعد أكتر من <strong className="text-[#1a1a2e]">٤٦ مشروع</strong> لعملاء من مصر والسعودية ودول عربية، شَـدِج بقت اسم ليه ثقل وقيمة في السوق.</p>
+                <p>شَـــدِج بدأت من غرفة صغيرة وحلم كبير — إننا نثبت إن الجرافيك المصري والعربي يقدر يكون في مستوى عالمي.</p>
+                <p>بعد أكتر من <strong className="text-[#1a1a2e]">٤٦ مشروع</strong> لعملاء من مصر والسعودية ودول عربية، شَـــدِج بقت اسم ليه ثقل وقيمة في السوق.</p>
                 <p>هدفنا بسيط: كل عميل يشوف شغلنا ويقول <strong className="text-[#3730A3]">"ده اللي كنت عايزه بالضبط."</strong></p>
               </div>
               <Link href="/order"
@@ -115,7 +115,7 @@ export default function About() {
               <div className="aspect-square rounded-3xl overflow-hidden bg-[#1a1a2e] flex items-center justify-center relative">
                 <div className="absolute inset-0" style={{background:"radial-gradient(ellipse at 30% 70%, #3730A3 0%, #1a1a2e 60%)"}} />
                 <div className="relative z-10 text-center">
-                  <div className="text-8xl font-black text-white mb-2">شَـدِج</div>
+                  <div className="text-8xl font-black text-white mb-2">شَـــدِج</div>
                   <div className="text-[#F5E6C8]/60 text-sm tracking-widest uppercase">Shadj Graphics</div>
                 </div>
               </div>
@@ -183,7 +183,7 @@ export default function About() {
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <span className="text-[#F5E6C8]/60 font-bold text-xs tracking-[0.25em] uppercase mb-3 block">الفريق</span>
-            <h2 className="text-4xl md:text-5xl font-black text-white">العقول اللي وراء شَـدِج</h2>
+            <h2 className="text-4xl md:text-5xl font-black text-white">العقول اللي وراء شَـــدِج</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-4xl mx-auto">
             {TEAM.map((m, i) => (
@@ -202,7 +202,7 @@ export default function About() {
       <section className="py-24 bg-[#F5E6C8]">
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-4xl md:text-5xl font-black text-[#1a1a2e] mb-4">جاهز تشتغل معنا؟</h2>
-          <p className="text-gray-600 mb-10 text-lg max-w-md mx-auto leading-relaxed">ابعتلنا تفاصيل مشروعك وفريق شَـدِج هيتواصل معاك في أسرع وقت</p>
+          <p className="text-gray-600 mb-10 text-lg max-w-md mx-auto leading-relaxed">ابعتلنا تفاصيل مشروعك وفريق شَـــدِج هيتواصل معاك في أسرع وقت</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/order"
               className="inline-block bg-[#3730A3] text-white px-12 py-5 rounded-full font-black text-lg hover:bg-[#1e1b4b] transition-colors shadow-xl shadow-[#3730A3]/20">

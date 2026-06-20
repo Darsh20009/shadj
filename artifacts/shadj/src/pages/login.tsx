@@ -69,7 +69,7 @@ export default function Login() {
           <img src="/logo-white.png" alt="شدج" className="h-20 object-contain mx-auto mb-10 drop-shadow-2xl" />
           <h2 className="text-4xl font-black text-white mb-4">وكالة تصميم<br/><span className="text-[#F5E6C8]">بلا حدود</span></h2>
           <p className="text-gray-400 text-lg leading-loose max-w-sm mx-auto">
-            انضم لمئات العملاء اللي اختاروا شَـدِج لتحويل أفكارهم لتحف بصرية.
+            انضم لمئات العملاء اللي اختاروا شَـــدِج لتحويل أفكارهم لتحف بصرية.
           </p>
           <div className="flex justify-center gap-8 mt-10">
             {[["46+","مشروع"],["30+","عميل"],["3+","سنة"]].map(([n,l]) => (
@@ -94,7 +94,7 @@ export default function Login() {
 
           <div className="bg-white rounded-3xl shadow-2xl shadow-gray-200/80 p-8 border border-gray-100">
             <h1 className="text-2xl font-black text-[#1a1a2e] mb-2 text-right">
-              {tab === "login" ? "أهلاً بعودتك 👋" : "انضم لشَـدِج 🎨"}
+              {tab === "login" ? "أهلاً بعودتك 👋" : "انضم لشَـــدِج 🎨"}
             </h1>
             <p className="text-gray-400 text-sm mb-7 text-right">
               {tab === "login" ? "سجّل دخولك لمتابعة مشاريعك" : "أنشئ حسابك وابدأ رحلتك الإبداعية"}

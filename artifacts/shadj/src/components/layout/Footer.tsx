@@ -7,7 +7,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
           <div>
             <img src="/logo-white.png" alt="شدج" className="h-14 object-contain mb-5" />
-            <p className="text-gray-400 leading-relaxed text-sm max-w-xs">شَـدِج للجرافيك — بنعمل تصاميم بتنطق بالإبداع وتفرق مع كل عميل. شغلنا بيتكلم عن نفسه.</p>
+            <p className="text-gray-400 leading-relaxed text-sm max-w-xs">شَـــدِج للجرافيك — بنعمل تصاميم بتنطق بالإبداع وتفرق مع كل عميل. شغلنا بيتكلم عن نفسه.</p>
             <p className="text-[#F5E6C8]/60 text-xs mt-4">shadj-graphics.space</p>
           </div>
           <div>
@@ -15,7 +15,7 @@ export function Footer() {
             <ul className="space-y-3 text-gray-400 text-sm">
               <li><Link href="/" className="hover:text-white transition-colors">الرئيسية</Link></li>
               <li><Link href="/portfolio" className="hover:text-white transition-colors">شغلنا</Link></li>
-              <li><Link href="/about" className="hover:text-white transition-colors">عن شَـدِج</Link></li>
+              <li><Link href="/about" className="hover:text-white transition-colors">عن شَـــدِج</Link></li>
               <li><Link href="/order" className="hover:text-white transition-colors">ابدأ مشروعك</Link></li>
             </ul>
           </div>
@@ -38,7 +38,7 @@ export function Footer() {
           </div>
         </div>
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-gray-500 text-xs">
-          <p>© {new Date().getFullYear()} شَـدِج للجرافيك — جميع الحقوق محفوظة</p>
+          <p>© {new Date().getFullYear()} شَـــدِج للجرافيك — جميع الحقوق محفوظة</p>
           <p>
             صُنع بحب عبر{" "}
             <a

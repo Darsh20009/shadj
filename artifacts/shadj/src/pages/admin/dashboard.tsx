@@ -16,7 +16,7 @@ const MOCK_VISITS = [
 const PAGE_BREAKDOWN = [
   { page: "الرئيسية", views: 120, color: "#3730A3" },
   { page: "الأعمال", views: 95, color: "#6366f1" },
-  { page: "عن شَـدِج", views: 48, color: "#8b5cf6" },
+  { page: "عن شَـــدِج", views: 48, color: "#8b5cf6" },
   { page: "الطلبات", views: 72, color: "#F5E6C8" },
   { page: "تسجيل دخول", views: 31, color: "#a78bfa" },
 ];
@@ -50,7 +50,7 @@ export default function AdminDashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-black text-[#1a1a2e]">لوحة التحكم</h1>
-          <p className="text-gray-400 text-sm mt-0.5">مرحباً بك في إدارة شَـدِج للجرافيك</p>
+          <p className="text-gray-400 text-sm mt-0.5">مرحباً بك في إدارة شَـــدِج للجرافيك</p>
         </div>
         <div className="flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 px-4 py-2 rounded-full text-sm font-medium">
           <span className="relative flex h-2.5 w-2.5">

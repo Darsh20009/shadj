@@ -9,7 +9,7 @@ import { getImgUrl } from "@/lib/utils";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const MARQUEE_WORDS = ["إبداع","Design","شَـدِج","Graphic","أسلوب","Identity","حرفة","Vision","جرافيك","Creative"];
+const MARQUEE_WORDS = ["إبداع","Design","شَـــدِج","Graphic","أسلوب","Identity","حرفة","Vision","جرافيك","Creative"];
 
 const SERVICES = [
   { icon: "◆", title: "هوية بصرية", desc: "شعار + ألوان + خطوط + دليل هوية متكامل يعكس شخصية علامتك", color: "#3730A3" },
@@ -123,7 +123,7 @@ export default function Home() {
           </h1>
 
           <p className="hero-sub text-lg md:text-xl text-gray-400 max-w-xl mx-auto mb-12 leading-loose">
-            بنصمم بوسترات وهويات بصرية بتوقف الناس — مش بس تعدي. شغل شَـدِج بيتكلم عن نفسه.
+            بنصمم بوسترات وهويات بصرية بتوقف الناس — مش بس تعدي. شغل شَـــدِج بيتكلم عن نفسه.
           </p>
 
           <div className="hero-cta flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -161,7 +161,7 @@ export default function Home() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
               { n: 46, label: "مشروع منجز", sub: "لعملاء من مصر والسعودية" },
-              { n: 30, label: "عميل راضي", sub: "يثقون في شَـدِج" },
+              { n: 30, label: "عميل راضي", sub: "يثقون في شَـــدِج" },
               { n: 3, label: "سنوات خبرة", sub: "في عالم الجرافيك" },
               { n: 8, label: "تخصص تصميم", sub: "من هوية لتغليف" },
             ].map((s,i) => (
@@ -287,13 +287,13 @@ export default function Home() {
         <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-[#F5E6C8]/5 blur-3xl" />
         <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-[#6366f1]/10 blur-3xl" />
         <div className="container mx-auto px-6 relative z-10 text-center">
-          <p className="text-[#F5E6C8]/70 font-bold tracking-[0.3em] text-xs mb-6 uppercase">ليه شَـدِج؟</p>
+          <p className="text-[#F5E6C8]/70 font-bold tracking-[0.3em] text-xs mb-6 uppercase">ليه شَـــدِج؟</p>
           <h2 className="text-4xl md:text-6xl font-black text-white mb-8 leading-tight">
             احنا مش بس بنصمم<br/>
             <span className="text-[#F5E6C8]">احنا بنبني هويات</span>
           </h2>
           <p className="text-gray-300 text-lg leading-loose mb-12 max-w-2xl mx-auto">
-            كل بوستر بيحكي قصة. كل لون بيتخار بعناية. كل تفصيلة بتفرق. شَـدِج شركة جرافيك بتؤمن إن التصميم الكويس بيبيع — مش بس بيتعلق على الحيط.
+            كل بوستر بيحكي قصة. كل لون بيتخار بعناية. كل تفصيلة بتفرق. شَـــدِج شركة جرافيك بتؤمن إن التصميم الكويس بيبيع — مش بس بيتعلق على الحيط.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/about" className="inline-block border-2 border-[#F5E6C8] text-[#F5E6C8] px-10 py-4 rounded-full font-bold hover:bg-[#F5E6C8] hover:text-[#1a1a2e] transition-all">
@@ -313,9 +313,9 @@ export default function Home() {
           <h2 className="text-3xl font-black text-[#1a1a2e] mb-10 text-center">أسئلة شائعة</h2>
           <div className="space-y-3">
             {[
-              { q: "ما هو شَـدِج؟", a: "شَـدِج وكالة تصميم جرافيك عربية احترافية في مصر والسعودية، متخصصة في الهوية البصرية والبوسترات وسوشيال ميديا والتغليف." },
-              { q: "كيف أبدأ مشروعي؟", a: "سهل جداً — ادخل على صفحة 'ابدأ مشروعك' واملأ التفاصيل وفريق شَـدِج هيتواصل معاك في أسرع وقت ممكن." },
-              { q: "ما هي أوقات العمل؟", a: "شَـدِج متاحة لاستقبال مشاريعك 24 ساعة عبر الواتساب والنموذج الإلكتروني." },
+              { q: "ما هو شَـــدِج؟", a: "شَـــدِج وكالة تصميم جرافيك عربية احترافية في مصر والسعودية، متخصصة في الهوية البصرية والبوسترات وسوشيال ميديا والتغليف." },
+              { q: "كيف أبدأ مشروعي؟", a: "سهل جداً — ادخل على صفحة 'ابدأ مشروعك' واملأ التفاصيل وفريق شَـــدِج هيتواصل معاك في أسرع وقت ممكن." },
+              { q: "ما هي أوقات العمل؟", a: "شَـــدِج متاحة لاستقبال مشاريعك 24 ساعة عبر الواتساب والنموذج الإلكتروني." },
             ].map((faq, i) => (
               <details key={i} className="bg-[#f9f7f4] rounded-2xl p-5 group cursor-pointer border border-transparent hover:border-[#3730A3]/15 transition-colors">
                 <summary className="font-black text-[#1a1a2e] flex justify-between items-center list-none text-base">
@@ -334,7 +334,7 @@ export default function Home() {
         <div className="container mx-auto px-6 text-center">
           <p className="text-[#3730A3]/60 font-bold tracking-[0.2em] text-xs uppercase mb-4">Start Now</p>
           <h2 className="text-4xl md:text-6xl font-black text-[#1a1a2e] mb-4">عندك مشروع؟</h2>
-          <p className="text-[#3730A3] text-lg mb-10 font-medium">خلينا نحوله لتحفة بصرية مع شَـدِج</p>
+          <p className="text-[#3730A3] text-lg mb-10 font-medium">خلينا نحوله لتحفة بصرية مع شَـــدِج</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/order" className="inline-block bg-[#1a1a2e] text-white px-12 py-5 rounded-full font-black text-lg hover:bg-[#3730A3] transition-colors shadow-xl shadow-[#1a1a2e]/20">
               اطلب تصميمك دلوقتي

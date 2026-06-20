@@ -11,7 +11,7 @@ interface SEOProps {
   structuredData?: object | object[];
 }
 
-const BASE_TITLE = "شَـدِج للجرافيك";
+const BASE_TITLE = "شَـــدِج للجرافيك";
 const BASE_URL = "https://shadj-graphics.space";
 const DEFAULT_IMAGE = `${BASE_URL}/opengraph.jpg`;
 
@@ -66,7 +66,7 @@ export function useSEO({
     }
 
     return () => {
-      document.title = `${BASE_TITLE} | وكالة تصميم جرافيك احترافية — مصر والسعودية`;
+      document.title = `شَـــدِج للجرافيك | وكالة تصميم جرافيك احترافية — مصر والسعودية`;
     };
   }, [title, description, keywords, ogImage, ogType, canonical, noIndex]);
 }
