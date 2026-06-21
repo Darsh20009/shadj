@@ -1,2 +1,3 @@
 - [Shadj project setup](shadj-setup.md) — full-stack Arabic graphic design agency site, real posters at /posters/poster_01-46.png, admin login in topic file.
 - [MongoDB migration](mongodb-migration.md) — backend fully migrated from Drizzle/PostgreSQL to Mongoose/MongoDB; seedIfEmpty runs on every startup to ensure admin exists.
+- [Email and AI integration](email-ai-integration.md) — SMTP2Go HTTP API for email, Moonshot AI (.ai domain) for chat, OTP flow for registration.

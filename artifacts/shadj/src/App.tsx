@@ -7,6 +7,7 @@ import { setAuthTokenGetter } from "@workspace/api-client-react";
 
 import { RootLayout } from "@/components/layout/RootLayout";
 import { AdminLayout } from "@/components/admin/AdminLayout";
+import AIChatbot from "@/components/AIChatbot";
 
 import Home from "@/pages/home";
 
@@ -102,6 +103,7 @@ function App() {
       <TooltipProvider>
         <WouterRouter base="">
           <Router />
+          <AIChatbot />
         </WouterRouter>
         <Toaster />
       </TooltipProvider>
