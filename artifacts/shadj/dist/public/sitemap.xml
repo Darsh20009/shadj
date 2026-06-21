@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <url>
+    <loc>https://shadj-graphics.space/</loc>
+    <lastmod>2026-06-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://shadj-graphics.space/"/>
+    <image:image>
+      <image:loc>https://shadj-graphics.space/opengraph.jpg</image:loc>
+      <image:title>شدج للجرافيك — الرئيسية</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://shadj-graphics.space/portfolio</loc>
+    <lastmod>2026-06-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://shadj-graphics.space/portfolio"/>
+    <image:image>
+      <image:loc>https://shadj-graphics.space/posters/poster_01.png</image:loc>
+      <image:title>أعمال شدج للجرافيك</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://shadj-graphics.space/posters/poster_02.png</image:loc>
+      <image:title>تصميم جرافيك احترافي</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://shadj-graphics.space/posters/poster_03.png</image:loc>
+      <image:title>بوستر إعلاني</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://shadj-graphics.space/about</loc>
+    <lastmod>2026-06-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://shadj-graphics.space/about"/>
+  </url>
+
+  <url>
+    <loc>https://shadj-graphics.space/order</loc>
+    <lastmod>2026-06-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://shadj-graphics.space/order"/>
+  </url>
+
+</urlset>

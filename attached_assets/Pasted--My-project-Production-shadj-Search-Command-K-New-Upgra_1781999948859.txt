@@ -1,0 +1,141 @@
+
+My project
+
+Production
+
+shadj
+
+
+Search
+Command+
+K
+
+New
+
+Upgrade
+
+
+s
+Environment
+shadj
+Events
+Settings
+Monitor
+Logs
+Metrics
+Manage
+Environment
+Shell
+Scaling
+Previews
+Disk
+One-Off Jobs
+
+Changelog
+Invite a friend
+
+Contact support
+Render Status
+Your free instance will spin down with inactivity, which can delay requests by 50 seconds or more.
+Upgrade now
+
+Application logs
+Search
+Search logs
+
+Last hour
+
+
+
+                    ^
+PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
+    at consumeUntil (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:19937:21)
+    at parse (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:19962:28)
+    at process2 (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:20073:58)
+    at pathToRegexp (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:20084:7)
+    at Object.match (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:20038:32)
+    at matcher (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:20267:27)
+    at new Layer (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:20274:68)
+    at router8.route (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:20699:21)
+    at app2.route (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:21008:26)
+    at app2.<computed> [as get] (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:21071:26) {
+  originalPath: '*'
+}
+Node.js v24.14.1
+==> Exited with status 1
+==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
+==> Running 'npm run start'
+> workspace@0.0.0 start
+> node artifacts/api-server/dist/index.mjs
+file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:19937
+              throw new PathError(`Missing parameter name at index ${index}`, str);
+                    ^
+PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
+    at consumeUntil (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:19937:21)
+    at parse (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:19962:28)
+    at process2 (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:20073:58)
+    at pathToRegexp (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:20084:7)
+    at Object.match (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:20038:32)
+    at matcher (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:20267:27)
+    at new Layer (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:20274:68)
+    at router8.route (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:20699:21)
+    at app2.route (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:21008:26)
+    at app2.<computed> [as get] (file:///opt/render/project/src/artifacts/api-server/dist/index.mjs:21071:26) {
+  originalPath: '*'
+}
+Node.js v24.14.1
+==> Deploying...
+==> Setting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance
+==> Running 'npm run start'
+> workspace@0.0.0 start
+> node artifacts/api-server/dist/index.mjs
+{"level":30,"time":1781999873001,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","msg":"Connected to MongoDB"}
+{"level":30,"time":1781999873840,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","msg":"Admin user updated"}
+{"level":30,"time":1781999873915,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","port":10000,"msg":"Server listening"}
+{"level":30,"time":1781999874255,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":1,"method":"HEAD","url":"/"},"res":{"statusCode":200},"responseTime":5,"msg":"request completed"}
+==> Your service is live 🎉
+{"level":30,"time":1781999876039,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":2,"method":"GET","url":"/"},"res":{"statusCode":200},"responseTime":3,"msg":"request completed"}
+==> 
+==> ///////////////////////////////////////////////////////////
+==> 
+==> Available at your primary URL https://shadj-graphics.space + 1 more domain
+==> 
+==> ///////////////////////////////////////////////////////////
+{"level":30,"time":1781999886804,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":3,"method":"GET","url":"/"},"res":{"statusCode":200},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1781999887150,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":5,"method":"GET","url":"/assets/index-CT-IUAuk.css"},"res":{"statusCode":200},"responseTime":4,"msg":"request completed"}
+{"level":30,"time":1781999887152,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":4,"method":"GET","url":"/assets/index-h7aHw-k9.js"},"res":{"statusCode":200},"responseTime":13,"msg":"request completed"}
+{"level":30,"time":1781999887154,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":6,"method":"GET","url":"/logo-transparent.png"},"res":{"statusCode":200},"responseTime":6,"msg":"request completed"}
+{"level":30,"time":1781999887229,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":7,"method":"GET","url":"/manifest.json"},"res":{"statusCode":200},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1781999887564,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":8,"method":"GET","url":"/logo-white.png"},"res":{"statusCode":200},"responseTime":3,"msg":"request completed"}
+{"level":30,"time":1781999888002,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":9,"method":"GET","url":"/favicon.svg"},"res":{"statusCode":200},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1781999888004,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":10,"method":"GET","url":"/icon-192.png"},"res":{"statusCode":200},"responseTime":3,"msg":"request completed"}
+{"level":30,"time":1781999897468,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":11,"method":"GET","url":"/"},"res":{"statusCode":304},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1781999897759,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":12,"method":"GET","url":"/logo-white.png"},"res":{"statusCode":304},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1781999897760,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":13,"method":"GET","url":"/assets/index-CT-IUAuk.css"},"res":{"statusCode":304},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1781999897761,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":14,"method":"GET","url":"/logo-transparent.png"},"res":{"statusCode":304},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1781999897762,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":15,"method":"GET","url":"/assets/index-h7aHw-k9.js"},"res":{"statusCode":304},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1781999897784,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":16,"method":"GET","url":"/manifest.json"},"res":{"statusCode":304},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1781999898100,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":17,"method":"GET","url":"/favicon.svg"},"res":{"statusCode":304},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1781999898101,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":18,"method":"GET","url":"/icon-192.png"},"res":{"statusCode":304},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1781999905445,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":19,"method":"GET","url":"/"},"res":{"statusCode":304},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1781999905737,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":20,"method":"GET","url":"/logo-white.png"},"res":{"statusCode":304},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1781999905737,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":21,"method":"GET","url":"/assets/index-CT-IUAuk.css"},"res":{"statusCode":304},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1781999905739,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":22,"method":"GET","url":"/logo-transparent.png"},"res":{"statusCode":304},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1781999905742,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":23,"method":"GET","url":"/manifest.json"},"res":{"statusCode":304},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1781999905762,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":24,"method":"GET","url":"/assets/index-h7aHw-k9.js"},"res":{"statusCode":304},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1781999906116,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":25,"method":"GET","url":"/icon-192.png"},"res":{"statusCode":304},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1781999910428,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":26,"method":"GET","url":"/"},"res":{"statusCode":304},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1781999910715,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":27,"method":"GET","url":"/logo-white.png"},"res":{"statusCode":304},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1781999910717,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":28,"method":"GET","url":"/logo-transparent.png"},"res":{"statusCode":304},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1781999910718,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":29,"method":"GET","url":"/assets/index-h7aHw-k9.js"},"res":{"statusCode":304},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1781999910721,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":30,"method":"GET","url":"/manifest.json"},"res":{"statusCode":304},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1781999910740,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":31,"method":"GET","url":"/assets/index-CT-IUAuk.css"},"res":{"statusCode":304},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1781999911110,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":32,"method":"GET","url":"/favicon.svg"},"res":{"statusCode":304},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1781999911131,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":33,"method":"GET","url":"/icon-192.png"},"res":{"statusCode":304},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1781999916765,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":34,"method":"GET","url":"/"},"res":{"statusCode":200},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1781999917573,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":36,"method":"GET","url":"/manifest.json"},"res":{"statusCode":200},"responseTime":2,"msg":"request completed"}
+{"level":30,"time":1781999917574,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":35,"method":"GET","url":"/assets/index-CT-IUAuk.css"},"res":{"statusCode":200},"responseTime":4,"msg":"request completed"}
+{"level":30,"time":1781999917578,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":38,"method":"GET","url":"/logo-transparent.png"},"res":{"statusCode":200},"responseTime":5,"msg":"request completed"}
+{"level":30,"time":1781999917580,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":39,"method":"GET","url":"/logo-white.png"},"res":{"statusCode":200},"responseTime":6,"msg":"request completed"}
+{"level":30,"time":1781999917581,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":37,"method":"GET","url":"/assets/index-h7aHw-k9.js"},"res":{"statusCode":200},"responseTime":9,"msg":"request completed"}
+{"level":30,"time":1781999918190,"pid":83,"hostname":"srv-d8r8fq7avr4c73e84djg-hibernate-86f477cfbb-2hswp","req":{"id":40,"m
