@@ -24,6 +24,17 @@ async function start() {
       process.exit(1);
     }
     logger.info({ port }, "Server listening");
+
+    const appUrl = process.env["RENDER_EXTERNAL_URL"];
+    if (appUrl) {
+      setInterval(async () => {
+        try {
+          await fetch(`${appUrl}/api/health`);
+        } catch {
+          // silent - keep-alive best effort
+        }
+      }, 14 * 60 * 1000);
+    }
   });
 }
 

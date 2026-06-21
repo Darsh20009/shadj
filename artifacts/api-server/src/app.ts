@@ -36,9 +36,34 @@ app.use("/api", router);
 const frontendDist = path.join(process.cwd(), "artifacts/shadj/dist/public");
 
 if (existsSync(frontendDist)) {
-  app.use(express.static(frontendDist));
+  app.use(
+    "/assets",
+    express.static(path.join(frontendDist, "assets"), {
+      maxAge: "1y",
+      immutable: true,
+    }),
+  );
+
+  app.use(
+    "/posters",
+    express.static(path.join(frontendDist, "posters"), {
+      maxAge: "7d",
+    }),
+  );
+
+  app.use(
+    express.static(frontendDist, {
+      maxAge: "1h",
+      setHeaders(res, filePath) {
+        if (filePath.endsWith(".html")) {
+          res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        }
+      },
+    }),
+  );
 
   app.get("/{*path}", (_req, res) => {
+    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     res.sendFile(path.join(frontendDist, "index.html"));
   });
 }
