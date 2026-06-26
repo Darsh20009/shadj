@@ -1,7 +1,7 @@
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 import { useSessionTracker } from "@/lib/session";
-import { WhatsAppButton } from "@/components/WhatsAppButton";
+import FloatingAssistant from "@/components/FloatingAssistant";
 
 export function RootLayout({ children }: { children: React.ReactNode }) {
   useSessionTracker();
@@ -12,7 +12,7 @@ export function RootLayout({ children }: { children: React.ReactNode }) {
         {children}
       </main>
       <Footer />
-      <WhatsAppButton />
+      <FloatingAssistant />
     </div>
   );
 }
