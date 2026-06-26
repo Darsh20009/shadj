@@ -3,8 +3,22 @@ Allow: /
 Disallow: /admin
 Disallow: /admin/*
 Disallow: /api/*
+Disallow: /dashboard
 
-# Crawl-delay for bots
+User-agent: Googlebot
+Allow: /
+Disallow: /admin
+Disallow: /api
+Disallow: /dashboard
+Crawl-delay: 2
+
+User-agent: Bingbot
+Allow: /
+Disallow: /admin
+Disallow: /api
+Disallow: /dashboard
+Crawl-delay: 5
+
 User-agent: AhrefsBot
 Crawl-delay: 10
 
@@ -14,5 +28,4 @@ Crawl-delay: 10
 User-agent: MJ12bot
 Disallow: /
 
-# Sitemap
 Sitemap: https://shadj-graphics.space/sitemap.xml
