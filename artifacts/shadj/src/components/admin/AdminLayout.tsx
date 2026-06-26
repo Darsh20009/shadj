@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Link, useLocation } from "wouter";
 import { useGetMe, useLogout } from "@workspace/api-client-react";
-import { LayoutDashboard, Image as ImageIcon, ShoppingBag, Users, BarChart3, LogOut, Loader2, ExternalLink, Menu, X } from "lucide-react";
+import { LayoutDashboard, Image as ImageIcon, ShoppingBag, Users, BarChart3, LogOut, Loader2, ExternalLink, Menu } from "lucide-react";
+import { AdminWelcomeJoke } from "./AdminWelcomeJoke";
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {
   const [location, setLocation] = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showJoke, setShowJoke] = useState(false);
   const { data: user, isLoading, error } = useGetMe();
   const logout = useLogout();
 
@@ -15,12 +17,32 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
     }
   }, [user, isLoading, error, setLocation]);
 
+  useEffect(() => {
+    if (!isLoading && user && (user.role === "admin" || user.role === "designer" || user.role === "writer")) {
+      const key = `shadj_admin_joked_${user.email}`;
+      if (!sessionStorage.getItem(key)) {
+        setShowJoke(true);
+      }
+    }
+  }, [user, isLoading]);
+
+  const handleJokeEnter = useCallback(() => {
+    if (user) {
+      sessionStorage.setItem(`shadj_admin_joked_${user.email}`, "1");
+    }
+    setShowJoke(false);
+  }, [user]);
+
   if (isLoading || !user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0f0e1a]">
         <Loader2 className="w-8 h-8 animate-spin text-[#F5E6C8]" />
       </div>
     );
+  }
+
+  if (showJoke) {
+    return <AdminWelcomeJoke name={user.name} onEnter={handleJokeEnter} />;
   }
 
   const navItems = [

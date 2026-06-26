@@ -19,7 +19,7 @@ const AUTO_POPUPS = [
 
 const WELCOME_MSG: Message = {
   role: "assistant",
-  content: "أهلاً وسهلاً يسطا! 🎉\nأنا مساعد شَدِج الذكي المصري الأصيل 😄\nقولي عايز إيه وهنعمل لك تصميم يقلب الدنيا!",
+  content: "أهلاً وسهلاً! 🎉\nأنا شدجتي، مساعدك الذكي من شَدِج للتصميم 😄\nقولي عايز إيه وهنعمل لك تصميم يقلب الدنيا!",
 };
 
 export default function FloatingAssistant() {
@@ -137,10 +137,10 @@ export default function FloatingAssistant() {
             style={{ background: "linear-gradient(135deg,#e2b979,#c9973a)" }}>
             <img src="/logo-dark.png" alt="شدج" className="w-8 h-8 object-contain rounded-lg bg-black/10 p-0.5" />
             <div className="flex-1 min-w-0">
-              <div className="font-black text-black text-sm">مساعد شَدِج الذكي 🤖</div>
+              <div className="font-black text-black text-sm">شدجتي ✨</div>
               <div className="text-xs text-black/60 flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-800 inline-block" />
-                متاح دايماً • Moonshot AI
+                مساعدك الذكي من شَدِج
               </div>
             </div>
             <button onClick={() => setOpen(false)} className="text-black/50 hover:text-black/80 transition-colors flex-shrink-0">
@@ -157,7 +157,7 @@ export default function FloatingAssistant() {
               style={{ color: tab === "chat" ? "#e2b979" : "#555", borderBottom: tab === "chat" ? "2px solid #e2b979" : "2px solid transparent" }}
               onClick={() => setTab("chat")}
             >
-              💬 شات الذكاء الاصطناعي
+              💬 شات مع شدجتي
             </button>
             <button
               className="flex-1 py-2 text-xs font-bold transition-colors"
@@ -175,8 +175,14 @@ export default function FloatingAssistant() {
                 style={{ scrollbarWidth: "thin", scrollbarColor: "#333 transparent" }}>
                 {messages.map((msg, i) => (
                   <div key={i} className={`flex ${msg.role === "user" ? "justify-start" : "justify-end"}`}>
+                    {msg.role === "assistant" && (
+                      <div className="w-6 h-6 rounded-full flex-shrink-0 ml-2 self-end mb-1 flex items-center justify-center text-xs"
+                        style={{ background: "linear-gradient(135deg,#e2b979,#c9973a)", color: "#0d0d0d", fontWeight: 900 }}>
+                        ش
+                      </div>
+                    )}
                     <div
-                      className="max-w-[82%] px-3 py-2 text-sm leading-relaxed whitespace-pre-wrap"
+                      className="max-w-[76%] px-3 py-2 text-sm leading-relaxed whitespace-pre-wrap"
                       style={msg.role === "user"
                         ? { background: "#222", color: "#e5e5e5", borderRadius: "16px 16px 4px 16px" }
                         : { background: "linear-gradient(135deg,#e2b979,#c9973a)", color: "#0d0d0d", borderRadius: "16px 16px 16px 4px" }
@@ -187,7 +193,11 @@ export default function FloatingAssistant() {
                   </div>
                 ))}
                 {loading && (
-                  <div className="flex justify-end">
+                  <div className="flex justify-end items-end gap-2">
+                    <div className="w-6 h-6 rounded-full flex-shrink-0 ml-2 flex items-center justify-center text-xs"
+                      style={{ background: "linear-gradient(135deg,#e2b979,#c9973a)", color: "#0d0d0d", fontWeight: 900 }}>
+                      ش
+                    </div>
                     <div className="px-4 py-3 rounded-2xl" style={{ background: "#222", borderRadius: "16px 16px 16px 4px" }}>
                       <div className="flex gap-1.5 items-center">
                         {[0, 1, 2].map(i => (
@@ -206,7 +216,7 @@ export default function FloatingAssistant() {
                   ref={inputRef}
                   value={input}
                   onChange={e => setInput(e.target.value)}
-                  placeholder="اكتب سؤالك هنا يسطا..."
+                  placeholder="اكتب سؤالك لشدجتي..."
                   disabled={loading}
                   className="flex-1 bg-[#1e1e1e] text-white text-sm rounded-xl px-3 py-2.5 focus:outline-none placeholder:text-gray-600 disabled:opacity-50"
                 />
@@ -259,7 +269,7 @@ export default function FloatingAssistant() {
             ? "0 8px 32px rgba(0,0,0,0.5)"
             : "0 8px 32px rgba(226,185,121,0.45)",
         }}
-        title="مساعد شَدِج"
+        title="شدجتي — مساعدك الذكي"
       >
         {open ? (
           <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -268,7 +278,7 @@ export default function FloatingAssistant() {
         ) : (
           <img
             src="/logo-dark.png"
-            alt="شدج"
+            alt="شدجتي"
             className="w-10 h-10 object-contain"
           />
         )}
