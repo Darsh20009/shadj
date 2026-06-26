@@ -23,8 +23,8 @@ export function Footer() {
             <h3 className="font-bold mb-5 text-[#F5E6C8] text-sm">تواصل معنا</h3>
             <ul className="space-y-3 text-gray-400 text-sm">
               <li>
-                <a href="https://wa.me/201129085243" target="_blank" rel="noopener noreferrer" className="hover:text-green-400 transition-colors">
-                  +20 112 908 5243
+                <a href="mailto:gfx@shadj-graphics.space" className="hover:text-[#F5E6C8] transition-colors">
+                  gfx@shadj-graphics.space
                 </a>
               </li>
               <li>shadj-graphics.space</li>

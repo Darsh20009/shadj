@@ -126,7 +126,6 @@ function hashPassword(password: string) {
 }
 
 export async function seedIfEmpty() {
-  // Always ensure admin user exists (independent of portfolio works)
   const adminExists = await UserModel.findOne({ role: "admin" });
   if (!adminExists) {
     await UserModel.create({
@@ -138,12 +137,7 @@ export async function seedIfEmpty() {
     });
     logger.info("Admin user seeded");
   } else {
-    // Update existing admin to ensure phone and password are correct
-    await UserModel.findOneAndUpdate(
-      { role: "admin" },
-      { name: "شهد", phone: "+201129085243", passwordHash: hashPassword("123456") }
-    );
-    logger.info("Admin user updated");
+    logger.info("Admin user already exists — skipping seed");
   }
 
   const worksCount = await PortfolioWorkModel.countDocuments();

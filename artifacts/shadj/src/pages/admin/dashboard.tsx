@@ -1,43 +1,58 @@
-import { useEffect, useRef } from "react";
-import { useGetStats, useGetActiveUsers } from "@workspace/api-client-react";
-import { Users, Briefcase, ShoppingBag, Eye, Clock, Activity, TrendingUp, ArrowUpRight } from "lucide-react";
+import { useGetStats, useGetActiveUsers, useGetVisitorLogs } from "@workspace/api-client-react";
+import { Users, Briefcase, ShoppingBag, Eye, Clock, Activity, TrendingUp } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from "recharts";
 
-const MOCK_VISITS = [
-  { day: "السبت", visits: 18 },
-  { day: "الأحد", visits: 32 },
-  { day: "الاثنين", visits: 27 },
-  { day: "الثلاثاء", visits: 45 },
-  { day: "الأربعاء", visits: 38 },
-  { day: "الخميس", visits: 52 },
-  { day: "الجمعة", visits: 41 },
-];
-
-const PAGE_BREAKDOWN = [
-  { page: "الرئيسية", views: 120, color: "#3730A3" },
-  { page: "الأعمال", views: 95, color: "#6366f1" },
-  { page: "عن شَـــدِج", views: 48, color: "#8b5cf6" },
-  { page: "الطلبات", views: 72, color: "#F5E6C8" },
-  { page: "تسجيل دخول", views: 31, color: "#a78bfa" },
-];
+const DAYS_AR = ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
+const PAGE_LABELS: Record<string, string> = {
+  "/": "الرئيسية",
+  "/portfolio": "أعمالنا",
+  "/about": "عن شَدِج",
+  "/order": "الطلبات",
+  "/login": "تسجيل دخول",
+};
+const PAGE_COLORS = ["#3730A3", "#6366f1", "#8b5cf6", "#F5E6C8", "#a78bfa"];
 
 export default function AdminDashboard() {
   const { data: stats, isLoading: statsLoading } = useGetStats();
-  const { data: activeUsers, isLoading: activeLoading } = useGetActiveUsers();
+  const { data: activeUsers } = useGetActiveUsers();
+  const { data: logs = [] } = useGetVisitorLogs({ limit: 500 });
+
+  const weekData = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - (6 - i));
+    return { day: DAYS_AR[d.getDay()], date: d.toDateString(), visits: 0 };
+  });
+  logs.forEach(log => {
+    const logDate = new Date(log.startedAt).toDateString();
+    const entry = weekData.find(d => d.date === logDate);
+    if (entry) entry.visits++;
+  });
+
+  const pageFreq: Record<string, number> = {};
+  logs.forEach(log => {
+    (log.journey as string[]).forEach(page => {
+      pageFreq[page] = (pageFreq[page] || 0) + 1;
+    });
+  });
+  const pageData = Object.entries(pageFreq)
+    .map(([page, views]) => ({ page: PAGE_LABELS[page] || page, views }))
+    .sort((a, b) => b.views - a.views)
+    .slice(0, 5)
+    .map((p, i) => ({ ...p, color: PAGE_COLORS[i] }));
 
   const statCards = [
-    { title: "إجمالي الزوار", value: stats?.totalVisitors ?? 0, icon: Eye, color: "#3730A3", trend: "+12%" },
-    { title: "الأعمال المنشورة", value: stats?.totalWorks ?? 0, icon: Briefcase, color: "#6366f1", trend: "+3" },
-    { title: "إجمالي الطلبات", value: stats?.totalOrders ?? 0, icon: ShoppingBag, color: "#10b981", trend: "+5" },
-    { title: "طلبات معلقة", value: stats?.pendingOrders ?? 0, icon: Clock, color: "#f59e0b", trend: null },
-    { title: "نشطون الآن", value: activeUsers?.count ?? 0, icon: Activity, color: "#ef4444", trend: "live" },
-    { title: "زوار الشهر", value: stats?.monthlyVisitors ?? 0, icon: Users, color: "#8b5cf6", trend: "+28%" },
+    { title: "إجمالي الزوار",   value: stats?.totalVisitors ?? 0,  icon: Eye,       color: "#3730A3", trend: null },
+    { title: "الأعمال المنشورة", value: stats?.totalWorks ?? 0,     icon: Briefcase, color: "#6366f1", trend: null },
+    { title: "إجمالي الطلبات",  value: stats?.totalOrders ?? 0,    icon: ShoppingBag,color: "#10b981", trend: null },
+    { title: "طلبات معلقة",     value: stats?.pendingOrders ?? 0,  icon: Clock,     color: "#f59e0b", trend: null },
+    { title: "نشطون الآن",      value: activeUsers?.count ?? 0,    icon: Activity,  color: "#ef4444", trend: "live" },
+    { title: "زوار الشهر",      value: stats?.monthlyVisitors ?? 0,icon: Users,     color: "#8b5cf6", trend: null },
   ];
 
   if (statsLoading) {
     return (
       <div className="p-8 grid grid-cols-3 gap-5">
-        {Array.from({length:6}).map((_,i) => (
+        {Array.from({ length: 6 }).map((_, i) => (
           <div key={i} className="h-28 bg-gray-100 rounded-2xl animate-pulse" />
         ))}
       </div>
@@ -46,7 +61,6 @@ export default function AdminDashboard() {
 
   return (
     <div className="p-6 md:p-8 space-y-8" dir="rtl">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-black text-[#1a1a2e]">لوحة التحكم</h1>
@@ -61,7 +75,6 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Stat Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
         {statCards.map((card, i) => {
           const Icon = card.icon;
@@ -71,14 +84,8 @@ export default function AdminDashboard() {
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: card.color + "15" }}>
                   <Icon size={20} style={{ color: card.color }} />
                 </div>
-                {card.trend && (
-                  <span className={`text-xs font-bold px-2 py-1 rounded-full ${
-                    card.trend === "live"
-                      ? "bg-red-50 text-red-500"
-                      : "bg-green-50 text-green-600"
-                  }`}>
-                    {card.trend === "live" ? "🔴 مباشر" : `↑ ${card.trend}`}
-                  </span>
+                {card.trend === "live" && (
+                  <span className="text-xs font-bold px-2 py-1 rounded-full bg-red-50 text-red-500">🔴 مباشر</span>
                 )}
               </div>
               <div className="text-3xl font-black text-[#1a1a2e] mb-1">{card.value}</div>
@@ -88,46 +95,46 @@ export default function AdminDashboard() {
         })}
       </div>
 
-      {/* Charts Row */}
       <div className="grid lg:grid-cols-5 gap-6">
-        {/* Line Chart - Visits */}
         <div className="lg:col-span-3 bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="font-black text-[#1a1a2e]">زيارات الأسبوع</h2>
-            <span className="flex items-center gap-1 text-green-500 text-xs font-bold">
-              <TrendingUp size={14} /> +18% مقارنة بالأسبوع الماضي
+            <h2 className="font-black text-[#1a1a2e]">زيارات آخر 7 أيام</h2>
+            <span className="flex items-center gap-1 text-[#3730A3] text-xs font-bold bg-[#3730A3]/5 px-3 py-1 rounded-full">
+              <TrendingUp size={12} /> بيانات حقيقية
             </span>
           </div>
           <ResponsiveContainer width="100%" height={200}>
-            <LineChart data={MOCK_VISITS}>
+            <LineChart data={weekData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis dataKey="day" tick={{ fontSize: 11, fill: "#9ca3af" }} />
-              <YAxis tick={{ fontSize: 11, fill: "#9ca3af" }} />
+              <YAxis tick={{ fontSize: 11, fill: "#9ca3af" }} allowDecimals={false} />
               <Tooltip contentStyle={{ borderRadius: "12px", border: "none", boxShadow: "0 4px 20px rgba(0,0,0,0.1)" }} />
               <Line type="monotone" dataKey="visits" stroke="#3730A3" strokeWidth={3} dot={{ fill: "#3730A3", r: 4 }} activeDot={{ r: 6 }} />
             </LineChart>
           </ResponsiveContainer>
         </div>
 
-        {/* Bar Chart - Pages */}
         <div className="lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
           <h2 className="font-black text-[#1a1a2e] mb-6">أكثر الصفحات زيارة</h2>
-          <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={PAGE_BREAKDOWN} layout="vertical" margin={{ left: 10 }}>
-              <XAxis type="number" tick={{ fontSize: 10, fill: "#9ca3af" }} />
-              <YAxis dataKey="page" type="category" tick={{ fontSize: 11, fill: "#6b7280" }} width={60} />
-              <Tooltip contentStyle={{ borderRadius: "12px", border: "none" }} />
-              <Bar dataKey="views" radius={[0, 6, 6, 0]}>
-                {PAGE_BREAKDOWN.map((entry, i) => (
-                  <Cell key={i} fill={entry.color} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+          {pageData.length > 0 ? (
+            <ResponsiveContainer width="100%" height={200}>
+              <BarChart data={pageData} layout="vertical" margin={{ left: 10 }}>
+                <XAxis type="number" tick={{ fontSize: 10, fill: "#9ca3af" }} allowDecimals={false} />
+                <YAxis dataKey="page" type="category" tick={{ fontSize: 11, fill: "#6b7280" }} width={65} />
+                <Tooltip contentStyle={{ borderRadius: "12px", border: "none" }} />
+                <Bar dataKey="views" radius={[0, 6, 6, 0]}>
+                  {pageData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="flex items-center justify-center h-[200px] text-gray-300 text-sm">
+              لا توجد بيانات بعد
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Active Sessions */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-50">
           <h2 className="font-black text-[#1a1a2e]">الزوار النشطون الآن</h2>
@@ -152,7 +159,7 @@ export default function AdminDashboard() {
                     {session.sessionId.substring(0, 12)}...
                   </p>
                   <p className="text-xs text-gray-400 mt-0.5">
-                    الصفحة الحالية: <span className="text-[#3730A3] font-medium">{session.currentPage}</span>
+                    الصفحة الحالية: <span className="text-[#3730A3] font-medium">{PAGE_LABELS[session.currentPage] || session.currentPage}</span>
                   </p>
                 </div>
                 <div className="text-xs text-gray-400 shrink-0">

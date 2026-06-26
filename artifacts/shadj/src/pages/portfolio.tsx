@@ -233,11 +233,10 @@ export default function Portfolio() {
 
                 <div className="mt-8 flex gap-2">
                   <a
-                    href={`https://wa.me/201129085243?text=${encodeURIComponent(`أريد تصميم مثل: ${selectedWork.titleAr}`)}`}
-                    target="_blank" rel="noopener noreferrer"
+                    href="/order"
                     className="flex-1 bg-[#F5E6C8] hover:bg-[#e8d4b0] text-[#0a0914] text-center py-3 rounded-xl font-black text-sm transition-colors"
                   >
-                    أطلب مثيل ده ←
+                    أطلب تصميم مشابه ←
                   </a>
                   <button
                     onClick={() => setSelectedWork(null)}
