@@ -59,6 +59,38 @@ const OrderSchema = new mongoose.Schema({
 });
 export const OrderModel = mongoose.models["Order"] || mongoose.model("Order", OrderSchema);
 
+const MessageSchema = new mongoose.Schema({
+  orderId: { type: mongoose.Schema.Types.ObjectId, ref: "Order", default: null },
+  fromRole: { type: String, required: true },
+  fromName: { type: String, required: true },
+  fromEmail: { type: String, required: true },
+  toEmail: { type: String, required: true },
+  toName: { type: String, default: "" },
+  subject: { type: String, required: true },
+  content: { type: String, required: true },
+  read: { type: Boolean, default: false },
+  createdAt: { type: Date, default: Date.now },
+});
+export const MessageModel =
+  mongoose.models["Message"] || mongoose.model("Message", MessageSchema);
+
+export function serializeMessage(doc: any) {
+  const obj = doc.toObject ? doc.toObject() : { ...doc };
+  return {
+    id: String(obj._id),
+    orderId: obj.orderId ? String(obj.orderId) : null,
+    fromRole: obj.fromRole,
+    fromName: obj.fromName,
+    fromEmail: obj.fromEmail,
+    toEmail: obj.toEmail,
+    toName: obj.toName || "",
+    subject: obj.subject,
+    content: obj.content,
+    read: obj.read,
+    createdAt: obj.createdAt instanceof Date ? obj.createdAt.toISOString() : String(obj.createdAt),
+  };
+}
+
 const VisitorLogSchema = new mongoose.Schema({
   sessionId: { type: String, required: true, unique: true },
   journey: { type: [String], default: [] },

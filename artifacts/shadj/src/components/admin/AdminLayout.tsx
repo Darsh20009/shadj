@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { Link, useLocation } from "wouter";
 import { useGetMe, useLogout } from "@workspace/api-client-react";
-import { LayoutDashboard, Image as ImageIcon, ShoppingBag, Users, BarChart3, LogOut, Loader2, ExternalLink, Menu } from "lucide-react";
+import { LayoutDashboard, Image as ImageIcon, ShoppingBag, Users, BarChart3, LogOut, Loader2, ExternalLink, Menu, Mail, Sparkles } from "lucide-react";
 import { AdminWelcomeJoke } from "./AdminWelcomeJoke";
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -49,6 +49,8 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
     { href: "/admin", label: "لوحة التحكم", icon: LayoutDashboard },
     { href: "/admin/portfolio", label: "الأعمال", icon: ImageIcon },
     { href: "/admin/orders", label: "الطلبات", icon: ShoppingBag },
+    { href: "/admin/messages", label: "المراسلات", icon: Mail },
+    { href: "/admin/ai-tools", label: "أدوات الذكاء الاصطناعي", icon: Sparkles },
     { href: "/admin/users", label: "المستخدمين", icon: Users },
     { href: "/admin/analytics", label: "الإحصائيات", icon: BarChart3 },
   ];

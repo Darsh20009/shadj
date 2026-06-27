@@ -67,8 +67,9 @@ export default function Order() {
     if (!v.clientName?.trim())  { setStepError("الاسم الكامل مطلوب"); return; }
     if (!v.clientEmail?.trim()) { setStepError("البريد الإلكتروني مطلوب"); return; }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.clientEmail)) { setStepError("البريد الإلكتروني غير صحيح"); return; }
-    if (v.password && v.password.length < 6)        { setStepError("كلمة المرور يجب أن تكون 6 أحرف على الأقل"); return; }
-    if (v.password && v.password !== v.confirmPassword) { setStepError("كلمتا المرور غير متطابقتين"); return; }
+    if (!v.password?.trim())                         { setStepError("كلمة السر مطلوبة لإنشاء حسابك"); return; }
+    if (v.password.length < 6)                       { setStepError("كلمة المرور يجب أن تكون 6 أحرف على الأقل"); return; }
+    if (v.password !== v.confirmPassword)            { setStepError("كلمتا المرور غير متطابقتين"); return; }
     setStep(2);
   }
 
@@ -80,8 +81,9 @@ export default function Order() {
   }
 
   async function onSubmit(data: FormData) {
-    if (!selectedType)            { setStepError("اختر نوع التصميم"); setStep(2); return; }
+    if (!selectedType)             { setStepError("اختر نوع التصميم"); setStep(2); return; }
     if (!data.description?.trim()) { setStepError("وصف المشروع مطلوب"); setStep(2); return; }
+    if (!data.password?.trim() || data.password.length < 6) { setStepError("كلمة السر مطلوبة"); setStep(1); return; }
     setSubmitError("");
 
     try {
@@ -243,19 +245,19 @@ export default function Order() {
                 <div className="border-t border-gray-100 pt-5">
                   <div className="flex items-center gap-2 mb-3">
                     <span className="text-base">🔐</span>
-                    <p className="text-sm font-bold text-gray-700">كلمة سر للداشبورد</p>
-                    <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">اختياري</span>
+                    <p className="text-sm font-bold text-gray-700">كلمة سر لحسابك *</p>
+                    <span className="text-xs text-white bg-[#3730A3] px-2 py-0.5 rounded-full">مطلوب</span>
                   </div>
                   <p className="text-xs text-gray-400 mb-3 leading-relaxed">
-                    لو حطّيت كلمة سر، هنعمل لك حساب تلقائياً تقدر تتابع حالة طلبك وتتواصل معنا منه في أي وقت.
+                    سنُنشئ لك حساباً تلقائياً تتابع من خلاله حالة طلبك وتتواصل مع فريقنا في أي وقت.
                   </p>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs font-bold text-gray-500 mb-1.5">كلمة السر</label>
+                      <label className="block text-xs font-bold text-gray-500 mb-1.5">كلمة السر *</label>
                       <input {...register("password")} type="password" placeholder="6 أحرف على الأقل" className={inputCls} />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-gray-500 mb-1.5">تأكيد كلمة السر</label>
+                      <label className="block text-xs font-bold text-gray-500 mb-1.5">تأكيد كلمة السر *</label>
                       <input {...register("confirmPassword")} type="password" placeholder="••••••" className={inputCls} />
                     </div>
                   </div>

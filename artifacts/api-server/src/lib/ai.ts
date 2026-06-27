@@ -88,3 +88,61 @@ export async function generateDesignBrief(opts: {
 
   return chatWithAI([{ role: "user", content: prompt }]);
 }
+
+export async function generateCreativeIdeas(opts: {
+  designType: string;
+  industry: string;
+  brand: string;
+}): Promise<string> {
+  const prompt = `أنت مدير إبداعي خبير في التصميم الجرافيكي. اقترح 5 أفكار إبداعية مبتكرة وجريئة لـ:
+- نوع التصميم: ${opts.designType}
+- المجال / الصناعة: ${opts.industry}
+- البراند: ${opts.brand}
+
+لكل فكرة اذكر: عنوان الفكرة، الوصف الإبداعي، لماذا ستنجح، والإحساس البصري المقترح. كن جريئاً وإبداعياً وغير تقليدي.`;
+  return chatWithAI([{ role: "user", content: prompt }]);
+}
+
+export async function generateColorPalette(opts: {
+  brand: string;
+  mood: string;
+  industry: string;
+}): Promise<string> {
+  const prompt = `أنت خبير في نظرية الألوان والهوية البصرية. اقترح لوحة ألوان احترافية لـ:
+- البراند: ${opts.brand}
+- المزاج / الإحساس المطلوب: ${opts.mood}
+- المجال: ${opts.industry}
+
+اذكر: 5 ألوان رئيسية مع كود HEX لكل لون، وصف للون، ومتى يُستخدم، والمزاج النفسي الذي يعكسه. ثم اقترح تركيبة الاستخدام المثالية بالنسب المئوية.`;
+  return chatWithAI([{ role: "user", content: prompt }]);
+}
+
+export async function generateSocialContent(opts: {
+  platform: string;
+  topic: string;
+  tone: string;
+  brand: string;
+}): Promise<string> {
+  const prompt = `أنت كاتب محتوى سوشيال ميديا محترف ومتخصص في براندات التصميم. اكتب محتوى لـ:
+- المنصة: ${opts.platform}
+- الموضوع: ${opts.topic}
+- أسلوب الكتابة: ${opts.tone}
+- البراند: ${opts.brand}
+
+اكتب: 3 نسخ مختلفة من المحتوى (قصير / متوسط / مفصّل)، مع الهاشتاجات المناسبة لكل نسخة. المحتوى بالعربية.`;
+  return chatWithAI([{ role: "user", content: prompt }]);
+}
+
+export async function generateBrandAnalysis(opts: {
+  brandName: string;
+  description: string;
+  competitors: string;
+}): Promise<string> {
+  const prompt = `أنت مستشار براندينج محترف. حلّل وقيّم هوية البراند التالي وقدّم توصيات إبداعية:
+- اسم البراند: ${opts.brandName}
+- وصف النشاط / الرسالة: ${opts.description}
+- المنافسون: ${opts.competitors}
+
+قدّم تحليلاً يشمل: نقاط القوة في الهوية الحالية، فرص التمييز، توصيات للتصميم والألوان والخطوط، ورسالة البراند المقترحة (Tagline). كن عملياً وإبداعياً.`;
+  return chatWithAI([{ role: "user", content: prompt }]);
+}
