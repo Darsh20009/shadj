@@ -72,10 +72,12 @@ export default function Home() {
         }
       });
 
-      gsap.fromTo(".work-brand", { opacity:0, y:50 }, {
-        opacity:1, y:0, duration:0.7, stagger:0.18, ease:"power3.out",
-        scrollTrigger: { trigger: ".brands-section", start: "top 75%" }
-      });
+      if (document.querySelector(".work-brand")) {
+        gsap.fromTo(".work-brand", { opacity:0, y:50 }, {
+          opacity:1, y:0, duration:0.7, stagger:0.18, ease:"power3.out",
+          scrollTrigger: { trigger: ".brands-section", start: "top 75%" }
+        });
+      }
 
       gsap.fromTo(".service-card", { opacity:0, x:40 }, {
         opacity:1, x:0, duration:0.6, stagger:0.12, ease:"power2.out",
