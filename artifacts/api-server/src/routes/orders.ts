@@ -90,7 +90,7 @@ router.patch("/:id", requireAdmin, async (req, res) => {
     if (!oldOrder) return void res.status(404).json({ error: "الطلب غير موجود" });
 
     const oldStatus = String(oldOrder.status);
-    const order = await OrderModel.findByIdAndUpdate(req.params.id, updates, { new: true });
+    const order = await OrderModel.findByIdAndUpdate(req.params.id, updates, { returnDocument: "after" });
     if (!order) return void res.status(404).json({ error: "الطلب غير موجود" });
 
     if (status && status !== oldStatus) {
