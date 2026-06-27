@@ -60,8 +60,13 @@ export async function chatWithAI(messages: ChatMessage[]): Promise<string> {
     max_tokens: 2048,
   });
 
-  const content = response.choices[0]?.message?.content;
-  if (!content) throw new Error("Empty response from AI");
+  const raw = response.choices[0]?.message?.content;
+  if (!raw) throw new Error("Empty response from AI");
+
+  const content = raw.replace(
+    /[\u2E80-\u2EFF\u2F00-\u2FDF\u3000-\u303F\u31C0-\u31EF\u3200-\u32FF\u3300-\u33FF\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF\uFE30-\uFE4F\u{20000}-\u{2A6DF}\u{2A700}-\u{2CEAF}]/gu,
+    ""
+  ).replace(/\s{2,}/g, " ").trim();
 
   logger.info({ tokens: response.usage?.total_tokens }, "AI response generated");
   return content;
