@@ -2,7 +2,7 @@ import { logger } from "./logger";
 
 const SMTP2GO_API_KEY = process.env["SMTP2GO_API_KEY"];
 const FROM_EMAIL = "noreply@shadj-graphics.space";
-const FROM_NAME = "شَـدِج للتصميم";
+const FROM_NAME = "شَـدِج للجرافيكس";
 const ADMIN_EMAIL = "hsvshzvbxj@gmail.com";
 
 async function smtp2goSend(opts: { to: string; subject: string; html: string }) {
@@ -58,7 +58,7 @@ function wrap(content: string, emoji = "🎨"): string {
       </div>
       <div class="body">${content}</div>
       <div class="footer">
-        <p style="color:#444; font-size:11px; margin:0;">© 2025 شَدِج للتصميم — إشعار تلقائي للنظام 🤖</p>
+        <p style="color:#444; font-size:11px; margin:0;">© 2025 شَدِج للجرافيكس — إشعار تلقائي للنظام 🤖</p>
       </div>
     </div>
   </div>
@@ -183,7 +183,7 @@ export async function notifyClientOrderConfirmation(order: {
     `, "🎨");
     await smtp2goSend({
       to: order.clientEmail,
-      subject: `✅ وصلنا طلبك يا ${order.clientName} — شَدِج للتصميم`,
+      subject: `✅ وصلنا طلبك يا ${order.clientName} — شَدِج للجرافيكس`,
       html,
     });
     logger.info({ to: order.clientEmail }, "Order confirmation sent to client");

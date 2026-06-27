@@ -2,7 +2,7 @@ import { logger } from "./logger";
 
 const SMTP2GO_API_KEY = process.env["SMTP2GO_API_KEY"];
 const FROM_EMAIL = "noreply@shadj-graphics.space";
-const FROM_NAME = "شَـدِج للتصميم";
+const FROM_NAME = "شَـدِج للجرافيكس";
 const SITE = "https://shadj-graphics.space";
 const LOGO = `${SITE}/logo-white.png`;
 const POSTERS = [
@@ -105,7 +105,7 @@ function emailShell(bodyContent: string): string {
                 &nbsp;•&nbsp;
                 <a href="mailto:gfx@shadj-graphics.space" style="color:#7c3aed;text-decoration:none;">gfx@shadj-graphics.space</a>
               </p>
-              <p style="color:#333;font-size:11px;margin:0;">© 2025 شَدِج للتصميم — جميع الحقوق محفوظة</p>
+              <p style="color:#333;font-size:11px;margin:0;">© 2025 شَدِج للجرافيكس — جميع الحقوق محفوظة</p>
             </td>
           </tr>
 
@@ -121,7 +121,7 @@ export async function sendOTPEmail(to: string, name: string, otp: string) {
   const html = emailShell(`
     <h2 style="color:#e2b979;font-size:24px;margin:0 0 12px;font-weight:900;">أهلاً ${name}! 👋</h2>
     <p style="color:#bbb;font-size:15px;line-height:1.8;margin:0 0 28px;">
-      مرحباً بك في عائلة شَدِج للتصميم.<br>
+      مرحباً بك في عائلة شَدِج للجرافيكس.<br>
       استخدم رمز التحقق التالي لإتمام تسجيل حسابك:
     </p>
     <table cellpadding="0" cellspacing="0" width="100%" style="margin:0 0 28px;">
@@ -152,7 +152,7 @@ export async function sendWelcomeEmail(to: string, name: string) {
     <div style="text-align:center;margin-bottom:32px;">
       <div style="display:inline-block;background:linear-gradient(135deg,#7c3aed20,#e2b97920);border:1px solid #7c3aed40;border-radius:50%;width:72px;height:72px;line-height:72px;font-size:36px;margin-bottom:16px;">🎉</div>
       <h2 style="color:#e2b979;font-size:26px;margin:0 0 8px;font-weight:900;">مرحباً بك يا ${name}!</h2>
-      <p style="color:#888;font-size:14px;margin:0;">تم تفعيل حسابك بنجاح في شَدِج للتصميم ✅</p>
+      <p style="color:#888;font-size:14px;margin:0;">تم تفعيل حسابك بنجاح في شَدِج للجرافيكس ✅</p>
     </div>
 
     <div style="background:#0d0d0d;border-right:4px solid #e2b979;padding:20px 24px;border-radius:0 12px 12px 0;margin:0 0 28px;">
@@ -180,7 +180,7 @@ export async function sendWelcomeEmail(to: string, name: string) {
   `);
 
   try {
-    await smtp2goSend({ to, subject: "🎉 مرحباً بك في شَدِج للتصميم!", html });
+    await smtp2goSend({ to, subject: "🎉 مرحباً بك في شَدِج للجرافيكس!", html });
     logger.info({ to }, "Welcome email sent");
   } catch (err) {
     logger.error({ err, to }, "Failed to send welcome email");
