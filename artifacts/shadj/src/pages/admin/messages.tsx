@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useGetMe } from "@workspace/api-client-react";
-import { Mail, Send, Trash2, Eye, EyeOff, RefreshCw, X, ChevronDown, ChevronUp } from "lucide-react";
+import { Mail, Send, Trash2, Eye, EyeOff, RefreshCw, X, ChevronDown, ChevronUp, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface Message {
@@ -55,6 +55,28 @@ export default function AdminMessages() {
 
   const [form, setForm] = useState({ toEmail: "", toName: "", subject: "", content: "", orderId: "" });
   const [sending, setSending] = useState(false);
+  const [smartReplying, setSmartReplying] = useState(false);
+
+  async function handleSmartReply() {
+    if (!selected) return;
+    setSmartReplying(true);
+    try {
+      const res = await fetch("/api/ai/smart-reply", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token()}` },
+        body: JSON.stringify({ messageContent: selected.content, senderName: selected.fromName, subject: selected.subject }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setForm({ toEmail: selected.fromEmail, toName: selected.fromName, subject: `رداً على: ${selected.subject}`, content: data.result || "", orderId: selected.orderId || "" });
+      setShowCompose(true);
+      toast({ title: "✨ تم توليد الرد الذكي — راجعيه قبل الإرسال" });
+    } catch {
+      toast({ title: "❌ فشل توليد الرد الذكي", variant: "destructive" });
+    } finally {
+      setSmartReplying(false);
+    }
+  }
 
   async function load() {
     setLoading(true);
@@ -268,14 +290,23 @@ export default function AdminMessages() {
                     {selected.content}
                   </div>
                 </div>
-                <div className="p-4 border-t border-gray-50">
+                <div className="p-4 border-t border-gray-50 space-y-2">
+                  {selected.fromRole !== "admin" && (
+                    <button
+                      onClick={handleSmartReply}
+                      disabled={smartReplying}
+                      className="w-full flex items-center justify-center gap-2 bg-gradient-to-l from-[#7c3aed] to-[#3730A3] text-white py-2.5 rounded-xl text-sm font-bold hover:opacity-90 transition-opacity disabled:opacity-60">
+                      {smartReplying ? <RefreshCw size={14} className="animate-spin" /> : <Sparkles size={14} />}
+                      {smartReplying ? "الذكاء الاصطناعي يكتب الرد..." : "✨ رد ذكي بالذكاء الاصطناعي"}
+                    </button>
+                  )}
                   <button
                     onClick={() => {
                       setForm({ toEmail: selected.fromEmail, toName: selected.fromName, subject: `رداً على: ${selected.subject}`, content: "", orderId: selected.orderId || "" });
                       setShowCompose(true);
                     }}
                     className="w-full flex items-center justify-center gap-2 bg-[#3730A3] text-white py-2.5 rounded-xl text-sm font-bold hover:bg-[#1e1b4b] transition-colors">
-                    <Send size={14} /> رد على هذه الرسالة
+                    <Send size={14} /> رد يدوي
                   </button>
                 </div>
               </>

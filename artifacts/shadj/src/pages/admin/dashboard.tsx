@@ -1,4 +1,4 @@
-import { useGetStats, useGetActiveUsers, useGetVisitorLogs, useGetMe } from "@workspace/api-client-react";
+import { useGetStats, useGetActiveUsers, useGetVisitorLogs, useGetMe, useListOrders } from "@workspace/api-client-react";
 import { getTimeGreeting } from "@/lib/greeting";
 import { Users, Briefcase, ShoppingBag, Eye, Clock, Activity, TrendingUp } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from "recharts";
@@ -18,6 +18,18 @@ export default function AdminDashboard() {
   const { data: activeUsers } = useGetActiveUsers();
   const { data: logs = [] } = useGetVisitorLogs({ limit: 500 });
   const { data: me } = useGetMe();
+  const { data: allOrders = [] } = useListOrders();
+
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const monthOrders = allOrders.filter(o => new Date((o as any).createdAt) >= monthStart);
+  const completionRate = allOrders.length > 0
+    ? Math.round((allOrders.filter(o => o.status === "completed").length / allOrders.length) * 100)
+    : 0;
+  const typeCounts: Record<string, number> = {};
+  allOrders.forEach(o => { if (o.designType) typeCounts[o.designType] = (typeCounts[o.designType] || 0) + 1; });
+  const topType = Object.entries(typeCounts).sort((a, b) => b[1] - a[1])[0];
+  const inProgressCount = allOrders.filter(o => o.status === "in_progress").length;
 
   const weekData = Array.from({ length: 7 }, (_, i) => {
     const d = new Date();
@@ -140,6 +152,35 @@ export default function AdminDashboard() {
           )}
         </div>
       </div>
+
+      {allOrders.length > 0 && (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+            <p className="text-xs font-bold text-gray-400 mb-1">طلبات الشهر الحالي</p>
+            <p className="text-3xl font-black text-[#3730A3]">{monthOrders.length}</p>
+            <p className="text-xs text-gray-400 mt-1">من إجمالي {allOrders.length} طلب</p>
+          </div>
+          <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+            <p className="text-xs font-bold text-gray-400 mb-1">معدل الإنجاز</p>
+            <div className="flex items-end gap-1.5">
+              <p className="text-3xl font-black text-green-600">{completionRate}%</p>
+            </div>
+            <div className="mt-2 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+              <div className="h-full bg-green-500 rounded-full transition-all" style={{ width: `${completionRate}%` }} />
+            </div>
+          </div>
+          <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+            <p className="text-xs font-bold text-gray-400 mb-1">قيد التنفيذ حالياً</p>
+            <p className="text-3xl font-black text-blue-600">{inProgressCount}</p>
+            <p className="text-xs text-gray-400 mt-1">طلب نشط</p>
+          </div>
+          <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+            <p className="text-xs font-bold text-gray-400 mb-1">أكثر خدمة مطلوبة</p>
+            <p className="text-base font-black text-[#1a1a2e] leading-snug mt-1">{topType ? topType[0] : "—"}</p>
+            {topType && <p className="text-xs text-gray-400 mt-1">{topType[1]} طلب</p>}
+          </div>
+        </div>
+      )}
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-50">

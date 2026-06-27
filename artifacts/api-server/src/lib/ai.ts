@@ -133,6 +133,75 @@ export async function generateSocialContent(opts: {
   return chatWithAI([{ role: "user", content: prompt }]);
 }
 
+export async function generateSmartReply(opts: {
+  messageContent: string;
+  senderName: string;
+  subject: string;
+}): Promise<string> {
+  const prompt = `أنت مدير وكالة تصميم شَدِج للجرافيكس. اكتب رداً احترافياً وودوداً باللغة العربية على هذه الرسالة من العميل:
+
+من: ${opts.senderName}
+الموضوع: ${opts.subject}
+محتوى الرسالة:
+${opts.messageContent}
+
+الرد يكون:
+- احترافياً وودوداً يعكس شخصية شَدِج
+- مباشراً ويعالج نقاط الرسالة
+- يحتوي تحية مناسبة وخاتمة من فريق شَدِج
+- بالعربية الفصيحة المعاصرة
+- قصيراً ومؤثراً (لا يتجاوز 120 كلمة)
+
+أعطني نص الرد مباشرة بدون أي مقدمة أو شرح.`;
+  return chatWithAI([{ role: "user", content: prompt }]);
+}
+
+export async function generateVideoScript(opts: {
+  brand: string;
+  audience: string;
+  videoType: string;
+  duration: string;
+  goal: string;
+}): Promise<string> {
+  const prompt = `أنت كاتب سيناريو محترف متخصص في الفيديوهات التسويقية. اكتب سكريبت فيديو كامل بالعربية لـ:
+- البراند: ${opts.brand}
+- الجمهور المستهدف: ${opts.audience}
+- نوع الفيديو: ${opts.videoType}
+- المدة: ${opts.duration}
+- الهدف: ${opts.goal}
+
+السكريبت يشمل:
+١. Hook مميز (أول 3 ثواني تشد الانتباه)
+٢. المشاهد بالترتيب مع الحوار / الفويس أوفر الكامل
+٣. ملاحظات على المؤثرات البصرية والموسيقى
+٤. Call to Action قوي في النهاية
+٥. ملاحظات التوجيه للمونتاج
+
+اجعله جذاباً وإبداعياً ومناسباً للسوشيال ميديا.`;
+  return chatWithAI([{ role: "user", content: prompt }]);
+}
+
+export async function generatePortfolioCaption(opts: {
+  designType: string;
+  brand: string;
+  mood: string;
+  platform: string;
+}): Promise<string> {
+  const prompt = `أنت متخصص محتوى إبداعي لوكالة تصميم. اكتب 5 كابشن مختلفة لعمل تصميم جديد:
+- نوع التصميم: ${opts.designType}
+- البراند / العميل: ${opts.brand}
+- الطابع: ${opts.mood}
+- المنصة: ${opts.platform}
+
+لكل كابشن اكتب:
+- نص جذاب (3-5 أسطر) مع إيموجيات
+- هاشتاجات عربية وإنجليزية مناسبة
+- نوع الكابشن (إلهامي / مباشر / تفاعلي / إخباري / فكاهي)
+
+باللغة العربية مع أسلوب السوشيال ميديا.`;
+  return chatWithAI([{ role: "user", content: prompt }]);
+}
+
 export async function generateFontPairing(opts: {
   brandStyle: string;
   industry: string;

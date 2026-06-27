@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { chatWithAI, generateDesignBrief, generateCreativeIdeas, generateColorPalette, generateSocialContent, generateBrandAnalysis, generateTagline, generateFontPairing, generateProjectQuote } from "../lib/ai";
+import { chatWithAI, generateDesignBrief, generateCreativeIdeas, generateColorPalette, generateSocialContent, generateBrandAnalysis, generateTagline, generateFontPairing, generateProjectQuote, generateSmartReply, generateVideoScript, generatePortfolioCaption } from "../lib/ai";
 import { logger } from "../lib/logger";
 
 const router = Router();
@@ -89,6 +89,42 @@ router.post("/tagline", async (req, res) => {
   } catch (err: any) {
     logger.error(err, "Tagline generation failed");
     res.status(500).json({ error: "خطأ في توليد التاج لاين" });
+  }
+});
+
+router.post("/smart-reply", async (req, res) => {
+  try {
+    const { messageContent, senderName, subject } = req.body;
+    if (!messageContent || !senderName) return void res.status(400).json({ error: "محتوى الرسالة واسم المرسل مطلوبان" });
+    const result = await generateSmartReply({ messageContent, senderName, subject: subject || "" });
+    res.json({ result });
+  } catch (err: any) {
+    logger.error(err, "Smart reply generation failed");
+    res.status(500).json({ error: "خطأ في توليد الرد الذكي" });
+  }
+});
+
+router.post("/video-script", async (req, res) => {
+  try {
+    const { brand, audience, videoType, duration, goal } = req.body;
+    if (!brand || !videoType || !goal) return void res.status(400).json({ error: "البراند ونوع الفيديو والهدف مطلوبة" });
+    const result = await generateVideoScript({ brand, audience: audience || "الجمهور العام", videoType, duration: duration || "30-60 ثانية", goal });
+    res.json({ result });
+  } catch (err: any) {
+    logger.error(err, "Video script generation failed");
+    res.status(500).json({ error: "خطأ في توليد السكريبت" });
+  }
+});
+
+router.post("/caption", async (req, res) => {
+  try {
+    const { designType, brand, mood, platform } = req.body;
+    if (!designType || !brand) return void res.status(400).json({ error: "نوع التصميم والبراند مطلوبان" });
+    const result = await generatePortfolioCaption({ designType, brand, mood: mood || "احترافي", platform: platform || "إنستقرام" });
+    res.json({ result });
+  } catch (err: any) {
+    logger.error(err, "Caption generation failed");
+    res.status(500).json({ error: "خطأ في توليد الكابشن" });
   }
 });
 

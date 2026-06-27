@@ -79,6 +79,46 @@ function StatusTimeline({ status }: { status: string }) {
   );
 }
 
+function StarRating({ orderId }: { orderId: string }) {
+  const key = `shadj_rating_${orderId}`;
+  const saved = parseInt(localStorage.getItem(key) || "0");
+  const [rating, setRating] = useState(saved);
+  const [hover, setHover] = useState(0);
+  const [submitted, setSubmitted] = useState(saved > 0);
+
+  function submit(stars: number) {
+    localStorage.setItem(key, String(stars));
+    setRating(stars);
+    setSubmitted(true);
+  }
+
+  if (submitted) {
+    return (
+      <div className="flex items-center gap-2 text-xs text-amber-500 font-bold">
+        <span className="flex">{[1,2,3,4,5].map(s => <span key={s}>{s <= rating ? "⭐" : "☆"}</span>)}</span>
+        <span className="text-gray-400 font-normal">شكراً لتقييمك!</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      <span className="text-xs text-gray-400 font-bold">قيّمي تجربتك:</span>
+      <div className="flex">
+        {[1,2,3,4,5].map(s => (
+          <button key={s} type="button"
+            onMouseEnter={() => setHover(s)}
+            onMouseLeave={() => setHover(0)}
+            onClick={() => submit(s)}
+            className="text-xl px-0.5 transition-transform hover:scale-125 focus:outline-none">
+            {s <= (hover || rating) ? "⭐" : "☆"}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function OrderCard({ order }: { order: any }) {
   const [open, setOpen] = useState(false);
   const cfg = STATUS_CONFIG[order.status] || STATUS_CONFIG.pending;
@@ -127,6 +167,12 @@ function OrderCard({ order }: { order: any }) {
             <div className="mt-4 bg-[#3730A3]/5 border border-[#3730A3]/20 rounded-xl p-4">
               <p className="text-xs font-bold text-[#3730A3] mb-1.5">💬 ملاحظات من الفريق</p>
               <p className="text-sm text-[#1a1a2e] leading-relaxed">{order.adminNotes}</p>
+            </div>
+          )}
+
+          {order.status === "completed" && (
+            <div className="mt-4 pt-3 border-t border-gray-100">
+              <StarRating orderId={order.id} />
             </div>
           )}
 

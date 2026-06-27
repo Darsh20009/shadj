@@ -94,6 +94,14 @@ export default function AdminAITools() {
   const [fontResult, setFontResult] = useState("");
   const [fontLoading, setFontLoading] = useState(false);
 
+  const [videoForm, setVideoForm] = useState({ brand: "", audience: "", videoType: "فيديو إعلاني", duration: "30-60 ثانية", goal: "" });
+  const [videoResult, setVideoResult] = useState("");
+  const [videoLoading, setVideoLoading] = useState(false);
+
+  const [captionForm, setCaptionForm] = useState({ designType: "", brand: "", mood: "احترافي وأنيق", platform: "إنستقرام" });
+  const [captionResult, setCaptionResult] = useState("");
+  const [captionLoading, setCaptionLoading] = useState(false);
+
   const PRICING_TYPES: Record<string, [number, number]> = {
     "هوية بصرية": [1500, 5000],
     "بوسترات": [200, 800],
@@ -381,7 +389,73 @@ export default function AdminAITools() {
           </div>
         </ToolCard>
 
-        {/* 9. Font Pairing */}
+        {/* 9. Video Script */}
+        <ToolCard icon={<ChevronDown size={22} />} color="#6366f1" title="مولّد سكريبت الفيديو" desc="سكريبت فيديو تسويقي كامل مع المشاهد والحوار وتوجيهات المونتاج">
+          <div className="grid grid-cols-2 gap-3 mb-3">
+            <div>
+              <label className="block text-xs font-bold text-gray-500 mb-1.5">اسم البراند</label>
+              <input value={videoForm.brand} onChange={e => setVideoForm(f => ({ ...f, brand: e.target.value }))} placeholder="مثال: شدج، مطعم النور..." className={inputCls} />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-gray-500 mb-1.5">الجمهور المستهدف</label>
+              <input value={videoForm.audience} onChange={e => setVideoForm(f => ({ ...f, audience: e.target.value }))} placeholder="مثال: شباب 18-35 / سيدات أعمال" className={inputCls} />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-gray-500 mb-1.5">نوع الفيديو</label>
+              <select value={videoForm.videoType} onChange={e => setVideoForm(f => ({ ...f, videoType: e.target.value }))} className={inputCls}>
+                {["فيديو إعلاني", "ريلز إنستقرام", "ستوري سوشيال", "فيديو تعريفي للشركة", "فيديو منتج", "موشن جرافيك"].map(t => <option key={t}>{t}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-gray-500 mb-1.5">المدة</label>
+              <select value={videoForm.duration} onChange={e => setVideoForm(f => ({ ...f, duration: e.target.value }))} className={inputCls}>
+                {["15 ثانية", "30-60 ثانية", "60-90 ثانية", "2-3 دقائق"].map(d => <option key={d}>{d}</option>)}
+              </select>
+            </div>
+            <div className="col-span-2">
+              <label className="block text-xs font-bold text-gray-500 mb-1.5">الهدف الأساسي</label>
+              <input value={videoForm.goal} onChange={e => setVideoForm(f => ({ ...f, goal: e.target.value }))} placeholder="مثال: زيادة المبيعات، نشر الوعي بالبراند، الترويج لعرض..." className={inputCls} />
+            </div>
+          </div>
+          <button onClick={() => run("video-script", videoForm, setVideoResult, setVideoLoading)} disabled={videoLoading}
+            className={btnCls} style={{ background: "linear-gradient(135deg,#6366f1,#4f46e5)" }}>
+            {videoLoading ? <><RefreshCw size={14} className="animate-spin" /> جاري الكتابة...</> : <>🎬 توليد السكريبت</>}
+          </button>
+          {videoResult && <ResultBox result={videoResult} />}
+        </ToolCard>
+
+        {/* 10. Caption Generator */}
+        <ToolCard icon={<Share2 size={22} />} color="#ec4899" title="مولّد كابشن البورتفوليو" desc="5 كابشن إبداعية جاهزة للنشر مع هاشتاجات مناسبة">
+          <div className="grid grid-cols-2 gap-3 mb-3">
+            <div>
+              <label className="block text-xs font-bold text-gray-500 mb-1.5">نوع التصميم</label>
+              <input value={captionForm.designType} onChange={e => setCaptionForm(f => ({ ...f, designType: e.target.value }))} placeholder="مثال: هوية بصرية، بوستر..." className={inputCls} />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-gray-500 mb-1.5">اسم العميل / البراند</label>
+              <input value={captionForm.brand} onChange={e => setCaptionForm(f => ({ ...f, brand: e.target.value }))} placeholder="مثال: كافيه نوارة" className={inputCls} />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-gray-500 mb-1.5">الطابع</label>
+              <select value={captionForm.mood} onChange={e => setCaptionForm(f => ({ ...f, mood: e.target.value }))} className={inputCls}>
+                {["احترافي وأنيق", "مرح وشبابي", "فاخر وراقي", "بسيط ومينيمال", "جريء وملفت", "دافئ ومحلي"].map(m => <option key={m}>{m}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-gray-500 mb-1.5">المنصة</label>
+              <select value={captionForm.platform} onChange={e => setCaptionForm(f => ({ ...f, platform: e.target.value }))} className={inputCls}>
+                {["إنستقرام", "فيسبوك", "تيك توك", "لينكدإن", "تويتر X"].map(p => <option key={p}>{p}</option>)}
+              </select>
+            </div>
+          </div>
+          <button onClick={() => run("caption", captionForm, setCaptionResult, setCaptionLoading)} disabled={captionLoading}
+            className={btnCls} style={{ background: "linear-gradient(135deg,#ec4899,#db2777)" }}>
+            {captionLoading ? <><RefreshCw size={14} className="animate-spin" /> جاري التوليد...</> : <>✍️ توليد الكابشنات</>}
+          </button>
+          {captionResult && <ResultBox result={captionResult} />}
+        </ToolCard>
+
+        {/* 11. Font Pairing */}
         <ToolCard icon={<Type size={22} />} color="#14b8a6" title="مزاوج الخطوط العربية" desc="4 تركيبات خطوط احترافية مقترحة حسب طابع براندك ومجالك">
           <div className="grid grid-cols-3 gap-3 mb-3">
             <div>
