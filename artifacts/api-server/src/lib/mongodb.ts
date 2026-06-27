@@ -157,7 +157,19 @@ function hashPassword(password: string) {
   return crypto.createHash("sha256").update(password + "shadj_salt_2024").digest("hex");
 }
 
+export async function migrateCategories() {
+  const result = await PortfolioWorkModel.updateMany(
+    { category: "تغليف" },
+    { $set: { category: "تصميم فيديوهات" } }
+  );
+  if (result.modifiedCount > 0) {
+    logger.info(`Migrated ${result.modifiedCount} works from تغليف → تصميم فيديوهات`);
+  }
+}
+
 export async function seedIfEmpty() {
+  await migrateCategories();
+
   const adminExists = await UserModel.findOne({ role: "admin" });
   if (!adminExists) {
     await UserModel.create({
@@ -197,12 +209,12 @@ export async function seedIfEmpty() {
     { titleAr: "بوست رمضاني — فيوتشر ستايل", title: "Ramadan Post", clientName: "فيوتشر ستايل", category: "سوشيال ميديا", imageUrl: "/posters/poster_16.png", featured: false },
     { titleAr: "إعلان تخفيضات — فيوتشر ستايل", title: "Sale Announcement", clientName: "فيوتشر ستايل", category: "سوشيال ميديا", imageUrl: "/posters/poster_17.png", featured: false },
     { titleAr: "ستوري نيويير — فيوتشر ستايل", title: "New Year Story", clientName: "فيوتشر ستايل", category: "سوشيال ميديا", imageUrl: "/posters/poster_18.png", featured: false },
-    { titleAr: "تغليف صندوق الوجبة — كايرو فوود", title: "Meal Box Packaging", clientName: "كايرو فوود", category: "تغليف", imageUrl: "/posters/poster_19.png", featured: true },
-    { titleAr: "تصميم الكيس الورقي — كايرو فوود", title: "Paper Bag Design", clientName: "كايرو فوود", category: "تغليف", imageUrl: "/posters/poster_20.png", featured: true },
-    { titleAr: "لصيقة العبوة — كايرو فوود", title: "Package Label Design", clientName: "كايرو فوود", category: "تغليف", imageUrl: "/posters/poster_21.png", featured: true },
-    { titleAr: "علبة السلطة — كايرو فوود", title: "Salad Box Packaging", clientName: "كايرو فوود", category: "تغليف", imageUrl: "/posters/poster_22.png", featured: false },
-    { titleAr: "كوب القهوة — كايرو فوود", title: "Coffee Cup Design", clientName: "كايرو فوود", category: "تغليف", imageUrl: "/posters/poster_23.png", featured: false },
-    { titleAr: "هوية التغليف الكاملة — كايرو فوود", title: "Full Packaging Identity", clientName: "كايرو فوود", category: "تغليف", imageUrl: "/posters/poster_24.png", featured: false },
+    { titleAr: "إعلان فيديو — ريل موشن", title: "Video Ad Reel", clientName: "ريل موشن", category: "تصميم فيديوهات", imageUrl: "/posters/poster_19.png", featured: true },
+    { titleAr: "موشن جرافيك لمنتج — ريل موشن", title: "Product Motion Graphic", clientName: "ريل موشن", category: "تصميم فيديوهات", imageUrl: "/posters/poster_20.png", featured: true },
+    { titleAr: "فيديو تعريفي للشركة — ريل موشن", title: "Company Intro Video", clientName: "ريل موشن", category: "تصميم فيديوهات", imageUrl: "/posters/poster_21.png", featured: true },
+    { titleAr: "ريلز إنستقرام — ريل موشن", title: "Instagram Reels Design", clientName: "ريل موشن", category: "تصميم فيديوهات", imageUrl: "/posters/poster_22.png", featured: false },
+    { titleAr: "إعلان تيك توك — ريل موشن", title: "TikTok Ad Creative", clientName: "ريل موشن", category: "تصميم فيديوهات", imageUrl: "/posters/poster_23.png", featured: false },
+    { titleAr: "فيديو حملة إطلاق — ريل موشن", title: "Launch Campaign Video", clientName: "ريل موشن", category: "تصميم فيديوهات", imageUrl: "/posters/poster_24.png", featured: false },
     { titleAr: "حملة الإطلاق — نيكست ليفل", title: "Launch Campaign", clientName: "نيكست ليفل", category: "حملات إعلانية", imageUrl: "/posters/poster_25.png", featured: true },
     { titleAr: "إعلان ميديا سوشيال — نيكست ليفل", title: "Social Media Ad", clientName: "نيكست ليفل", category: "حملات إعلانية", imageUrl: "/posters/poster_26.png", featured: true },
     { titleAr: "لوحة إعلانية خارجية — نيكست ليفل", title: "Outdoor Billboard", clientName: "نيكست ليفل", category: "حملات إعلانية", imageUrl: "/posters/poster_27.png", featured: true },
