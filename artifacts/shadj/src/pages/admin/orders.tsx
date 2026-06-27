@@ -5,7 +5,196 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useQueryClient } from "@tanstack/react-query";
 import { getListOrdersQueryKey } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
-import { Search, Calendar, DollarSign, ChevronDown, ChevronUp, Copy, Check, Phone, Send, X } from "lucide-react";
+import { Search, Calendar, DollarSign, ChevronDown, ChevronUp, Copy, Check, Phone, Send, X, ClipboardList, FileText, RefreshCw } from "lucide-react";
+
+const DELIVERY_CHECKLISTS: Record<string, string[]> = {
+  "هوية بصرية": [
+    "لوجو PNG شفاف (طولي + مربع + رمز)",
+    "لوجو SVG قابل للتكبير",
+    "لوجو PDF جودة طباعة",
+    "لوجو على خلفية بيضاء وداكنة",
+    "دليل الهوية البصرية PDF",
+    "كودات الألوان HEX + RGB + CMYK",
+    "اسم الخطوط المستخدمة",
+    "موكب عرض للوجو (Mockup)",
+    "ملفات المصدر (AI / PSD)",
+  ],
+  "بوسترات": [
+    "ملف PDF دقة 300dpi للطباعة",
+    "ملف PNG دقة عالية",
+    "ملف JPG للعرض الرقمي",
+    "نسخ بأحجام مختلفة إن طُلب",
+    "ملف المصدر (AI / PSD / Figma)",
+  ],
+  "سوشيال ميديا": [
+    "صور JPG/PNG بالمقاسات المطلوبة",
+    "ستوري + بوست + غلاف (إن انطبق)",
+    "نسخة قابلة للتعديل (Canva / Figma)",
+    "ملفات المصدر (AI / PSD)",
+    "دليل استخدام الألوان والخطوط",
+  ],
+  "حملات إعلانية": [
+    "مواد الحملة الكاملة (بوسترات + ستوري + بانر)",
+    "ملفات PDF للطباعة بدقة 300dpi",
+    "ملفات PNG للإعلانات الرقمية",
+    "نسخ بأبعاد مختلفة (Facebook / Google Ads)",
+    "تقرير عناصر الحملة البصرية",
+    "ملفات المصدر القابلة للتعديل",
+  ],
+  "تصميم فيديوهات": [
+    "ملف MP4 Full HD (1080p)",
+    "ملف MP4 مضغوط للسوشيال",
+    "صورة ثامبنيل PNG عالية الجودة",
+    "نسخ بأبعاد مختلفة (Story 9:16 / Feed 1:1 / YouTube 16:9)",
+    "ملف المصدر (AE / Premiere / Resolve)",
+  ],
+  "مطبوعات": [
+    "ملف PDF 300dpi جاهز للطباعة",
+    "ملف CMYK للطباعة الاحترافية",
+    "Bleed area صحيح (3mm على الأقل)",
+    "ملف PNG للعرض الرقمي",
+    "ملف المصدر (AI / InDesign)",
+  ],
+};
+const DEFAULT_CHECKLIST = [
+  "ملف التصميم النهائي بالجودة المطلوبة",
+  "ملف المصدر القابل للتعديل",
+  "تعليمات الاستخدام والتسليم",
+];
+
+function DeliveryChecklistModal({ designType, clientName, onClose }: { designType: string; clientName: string; onClose: () => void }) {
+  const items = DELIVERY_CHECKLISTS[designType] || DEFAULT_CHECKLIST;
+  const [checked, setChecked] = useState<boolean[]>(items.map(() => false));
+  const allDone = checked.every(Boolean);
+  const doneCount = checked.filter(Boolean).length;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" dir="rtl">
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100" style={{ background: "linear-gradient(135deg,#0f0e1a,#1a1a2e)" }}>
+          <div>
+            <h2 className="font-black text-base text-white flex items-center gap-2">
+              <ClipboardList size={16} className="text-[#F5E6C8]" />
+              قائمة التسليم
+            </h2>
+            <p className="text-xs text-gray-400 mt-0.5">{clientName} — {designType}</p>
+          </div>
+          <button onClick={onClose} className="text-gray-400 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-colors">
+            <X size={18} />
+          </button>
+        </div>
+        <div className="p-5">
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-sm text-gray-500">تأكدي من تسليم كل البنود:</p>
+            <span className={`text-xs font-black px-3 py-1 rounded-full ${allDone ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>
+              {doneCount} / {items.length}
+            </span>
+          </div>
+          <div className="space-y-2.5 mb-5">
+            {items.map((item, i) => (
+              <label key={i} className={`flex items-start gap-3 p-3 rounded-xl cursor-pointer transition-all ${checked[i] ? "bg-green-50 border border-green-100" : "bg-gray-50 border border-transparent hover:border-gray-200"}`}>
+                <input type="checkbox" checked={checked[i]} onChange={() => setChecked(c => c.map((v, j) => j === i ? !v : v))}
+                  className="mt-0.5 w-4 h-4 accent-green-500 rounded" />
+                <span className={`text-sm leading-snug ${checked[i] ? "line-through text-gray-400" : "text-gray-700 font-medium"}`}>{item}</span>
+              </label>
+            ))}
+          </div>
+          {allDone ? (
+            <div className="text-center py-3 bg-green-50 rounded-xl border border-green-100">
+              <p className="text-green-700 font-black text-sm">🎉 ممتاز! كل عناصر التسليم مكتملة</p>
+            </div>
+          ) : (
+            <p className="text-center text-xs text-gray-400">باقي {items.length - doneCount} بنود</p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface QuoteModal { clientName: string; designType: string; description: string; budget: string; deadline: string; }
+
+function QuoteGeneratorModal({ data, onClose }: { data: QuoteModal; onClose: () => void }) {
+  const { toast } = useToast();
+  const [result, setResult] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  async function generate() {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("shadj_token") || "";
+      const res = await fetch("/api/ai/quote", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify(data),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error);
+      setResult(json.result || "");
+    } catch {
+      toast({ title: "❌ فشل توليد عرض السعر", variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function copy() {
+    navigator.clipboard.writeText(result);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" dir="rtl">
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-xl overflow-hidden">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gradient-to-l from-[#3730A3] to-[#1a1a2e]">
+          <div>
+            <h2 className="font-black text-base text-white flex items-center gap-2">
+              <FileText size={16} className="text-[#F5E6C8]" />
+              مولّد عرض السعر الاحترافي
+            </h2>
+            <p className="text-xs text-gray-300 mt-0.5">{data.clientName} — {data.designType}</p>
+          </div>
+          <button onClick={onClose} className="text-gray-400 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-colors">
+            <X size={18} />
+          </button>
+        </div>
+        <div className="p-5">
+          {!result ? (
+            <div className="text-center py-8">
+              <div className="text-5xl mb-4">📄</div>
+              <p className="text-gray-600 font-medium mb-2">سيتم توليد عرض سعر احترافي كامل بالعربية</p>
+              <p className="text-sm text-gray-400 mb-6">يشمل: نطاق العمل، الجدول الزمني، التسعير، والشروط</p>
+              <button onClick={generate} disabled={loading}
+                className="flex items-center gap-2 mx-auto bg-[#3730A3] hover:bg-[#1a1a2e] text-white px-8 py-3 rounded-xl font-black text-sm transition-colors disabled:opacity-60">
+                {loading ? <><RefreshCw size={15} className="animate-spin" /> جاري التوليد بالذكاء الاصطناعي...</> : <><FileText size={15} /> توليد عرض السعر</>}
+              </button>
+            </div>
+          ) : (
+            <>
+              <div className="bg-gray-50 rounded-xl p-4 max-h-80 overflow-y-auto mb-4 border border-gray-100">
+                <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{result}</p>
+              </div>
+              <div className="flex gap-3">
+                <button onClick={copy}
+                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-sm transition-all border ${copied ? "bg-green-50 border-green-200 text-green-700" : "bg-white border-gray-200 text-gray-700 hover:border-[#3730A3]/30"}`}>
+                  {copied ? <><Check size={14} /> تم النسخ!</> : <><Copy size={14} /> نسخ العرض</>}
+                </button>
+                <button onClick={() => setResult("")}
+                  className="px-5 py-2.5 rounded-xl border border-gray-200 text-gray-500 hover:bg-gray-50 font-medium text-sm transition-colors">
+                  <RefreshCw size={14} />
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 const STATUS: Record<string, { label: string; color: string }> = {
   pending:     { label: "قيد الانتظار",  color: "bg-amber-100 text-amber-800 border-amber-200" },
@@ -163,6 +352,8 @@ export default function AdminOrders() {
   const [filterStatus, setFilterStatus] = useState("all");
   const [expanded, setExpanded] = useState<string | null>(null);
   const [msgModal, setMsgModal] = useState<QuickMsgModal | null>(null);
+  const [checklistModal, setChecklistModal] = useState<{ designType: string; clientName: string } | null>(null);
+  const [quoteModal, setQuoteModal] = useState<QuoteModal | null>(null);
 
   const handleStatusChange = (id: string, newStatus: string) => {
     updateOrder.mutate({ id, data: { status: newStatus } } as any, {
@@ -206,6 +397,8 @@ export default function AdminOrders() {
   return (
     <div className="p-6 md:p-8 max-w-7xl" dir="rtl">
       {msgModal && <QuickMessageModal data={msgModal} onClose={() => setMsgModal(null)} />}
+      {checklistModal && <DeliveryChecklistModal {...checklistModal} onClose={() => setChecklistModal(null)} />}
+      {quoteModal && <QuoteGeneratorModal data={quoteModal} onClose={() => setQuoteModal(null)} />}
 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
@@ -352,6 +545,22 @@ export default function AdminOrders() {
                           </a>
                         );
                       })()}
+
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setChecklistModal({ designType: order.designType || "", clientName: order.clientName || "" }); }}
+                        className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-xl font-bold text-sm transition-colors"
+                      >
+                        <ClipboardList size={14} />
+                        قائمة التسليم
+                      </button>
+
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setQuoteModal({ clientName: order.clientName || "", designType: order.designType || "", description: order.description || "", budget: (order as any).budget || "", deadline: (order as any).deadline || "" }); }}
+                        className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl font-bold text-sm transition-colors"
+                      >
+                        <FileText size={14} />
+                        عرض السعر
+                      </button>
 
                       <CopyButton text={`${order.clientName} | ${order.clientEmail} | ${order.designType}`} />
                     </div>

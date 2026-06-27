@@ -133,6 +133,57 @@ export async function generateSocialContent(opts: {
   return chatWithAI([{ role: "user", content: prompt }]);
 }
 
+export async function generateFontPairing(opts: {
+  brandStyle: string;
+  industry: string;
+  language: string;
+}): Promise<string> {
+  const prompt = `أنت خبير طباعة وتصميم جرافيك. اقترح 4 تركيبات خطوط احترافية لـ:
+- أسلوب البراند: ${opts.brandStyle}
+- المجال: ${opts.industry}
+- اللغة الرئيسية: ${opts.language}
+
+لكل تركيبة اذكر:
+١. خط العناوين (مع مصدر مجاني إن وجد)
+٢. خط النص الأساسي (مع مصدر مجاني)
+٣. الإحساس العام للتركيبة
+٤. متى تستخدمها بالضبط
+٥. مثال جملة كاملة بالتركيبة
+
+اشمل خطوطاً عربية في الاقتراحات، وكن عملياً ومحدداً.`;
+  return chatWithAI([{ role: "user", content: prompt }]);
+}
+
+export async function generateProjectQuote(opts: {
+  clientName: string;
+  designType: string;
+  description: string;
+  budget: string;
+  deadline: string;
+}): Promise<string> {
+  const today = new Date().toLocaleDateString("ar-SA", { year: "numeric", month: "long", day: "numeric" });
+  const prompt = `أنت مدير وكالة تصميم احترافية. اكتب عرض سعر (Project Proposal) كامل ورسمي بالعربية لـ:
+- اسم العميل: ${opts.clientName}
+- نوع التصميم: ${opts.designType}
+- تفاصيل المشروع: ${opts.description}
+- الميزانية المتاحة: ${opts.budget || "لم تُحدد"}
+- الموعد النهائي: ${opts.deadline || "مرن"}
+- التاريخ: ${today}
+- الوكالة: شَدِج للجرافيكس
+
+العرض يشمل:
+١. مقدمة احترافية وترحيبية
+٢. فهم المشروع والهدف
+٣. نطاق العمل والتسليمات بالتفصيل
+٤. الجدول الزمني المقترح (مراحل)
+٥. التسعير والشروط المالية
+٦. سياسة التعديلات وحقوق الملكية
+٧. خاتمة احترافية موقّعة من شَدِج
+
+اجعله رسمياً وموثوقاً ومقنعاً للعميل.`;
+  return chatWithAI([{ role: "user", content: prompt }]);
+}
+
 export async function generateTagline(opts: {
   brandName: string;
   industry: string;

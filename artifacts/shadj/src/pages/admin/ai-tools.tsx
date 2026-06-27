@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Sparkles, Lightbulb, Palette, Share2, Zap, Copy, Check, RefreshCw, ChevronDown, Tag, Calculator, Ruler } from "lucide-react";
+import { Sparkles, Lightbulb, Palette, Share2, Zap, Copy, Check, RefreshCw, ChevronDown, Tag, Calculator, Ruler, Type } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 function token() { return localStorage.getItem("shadj_token") || ""; }
@@ -89,6 +89,10 @@ export default function AdminAITools() {
   const [taglineForm, setTaglineForm] = useState({ brandName: "", industry: "", tone: "جريء وملهم" });
   const [taglineResult, setTaglineResult] = useState("");
   const [taglineLoading, setTaglineLoading] = useState(false);
+
+  const [fontForm, setFontForm] = useState({ brandStyle: "أنيق وراقي", industry: "", language: "عربي" });
+  const [fontResult, setFontResult] = useState("");
+  const [fontLoading, setFontLoading] = useState(false);
 
   const PRICING_TYPES: Record<string, [number, number]> = {
     "هوية بصرية": [1500, 5000],
@@ -375,6 +379,33 @@ export default function AdminAITools() {
               );
             })()}
           </div>
+        </ToolCard>
+
+        {/* 9. Font Pairing */}
+        <ToolCard icon={<Type size={22} />} color="#14b8a6" title="مزاوج الخطوط العربية" desc="4 تركيبات خطوط احترافية مقترحة حسب طابع براندك ومجالك">
+          <div className="grid grid-cols-3 gap-3 mb-3">
+            <div>
+              <label className="block text-xs font-bold text-gray-500 mb-1.5">أسلوب البراند</label>
+              <select value={fontForm.brandStyle} onChange={e => setFontForm(f => ({ ...f, brandStyle: e.target.value }))} className={inputCls}>
+                {["أنيق وراقي", "عصري وجريء", "بسيط ومينيمال", "مرح وشبابي", "تراثي وعربي", "فاخر وحصري", "ودود ومحلي"].map(s => <option key={s}>{s}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-gray-500 mb-1.5">المجال</label>
+              <input value={fontForm.industry} onChange={e => setFontForm(f => ({ ...f, industry: e.target.value }))} placeholder="مثال: مطعم، عيادة، أزياء" className={inputCls} />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-gray-500 mb-1.5">اللغة الرئيسية</label>
+              <select value={fontForm.language} onChange={e => setFontForm(f => ({ ...f, language: e.target.value }))} className={inputCls}>
+                {["عربي", "إنجليزي", "ثنائي (عربي + إنجليزي)"].map(l => <option key={l}>{l}</option>)}
+              </select>
+            </div>
+          </div>
+          <button onClick={() => run("font-pairing", fontForm, setFontResult, setFontLoading)} disabled={fontLoading}
+            className={btnCls} style={{ background: "linear-gradient(135deg,#14b8a6,#0d9488)" }}>
+            {fontLoading ? <><RefreshCw size={14} className="animate-spin" /> جاري الاقتراح...</> : <><Type size={14} /> اقتراح مزاوجة الخطوط</>}
+          </button>
+          {fontResult && <ResultBox result={fontResult} />}
         </ToolCard>
 
         {/* 8. Platform Sizes Reference */}

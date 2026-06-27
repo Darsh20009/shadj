@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { chatWithAI, generateDesignBrief, generateCreativeIdeas, generateColorPalette, generateSocialContent, generateBrandAnalysis, generateTagline } from "../lib/ai";
+import { chatWithAI, generateDesignBrief, generateCreativeIdeas, generateColorPalette, generateSocialContent, generateBrandAnalysis, generateTagline, generateFontPairing, generateProjectQuote } from "../lib/ai";
 import { logger } from "../lib/logger";
 
 const router = Router();
@@ -89,6 +89,30 @@ router.post("/tagline", async (req, res) => {
   } catch (err: any) {
     logger.error(err, "Tagline generation failed");
     res.status(500).json({ error: "خطأ في توليد التاج لاين" });
+  }
+});
+
+router.post("/font-pairing", async (req, res) => {
+  try {
+    const { brandStyle, industry, language } = req.body;
+    if (!brandStyle || !industry || !language) return void res.status(400).json({ error: "جميع الحقول مطلوبة" });
+    const result = await generateFontPairing({ brandStyle, industry, language });
+    res.json({ result });
+  } catch (err: any) {
+    logger.error(err, "Font pairing generation failed");
+    res.status(500).json({ error: "خطأ في توليد مزاوجة الخطوط" });
+  }
+});
+
+router.post("/quote", async (req, res) => {
+  try {
+    const { clientName, designType, description, budget, deadline } = req.body;
+    if (!clientName || !designType) return void res.status(400).json({ error: "اسم العميل ونوع التصميم مطلوبان" });
+    const result = await generateProjectQuote({ clientName, designType, description: description || "", budget: budget || "", deadline: deadline || "" });
+    res.json({ result });
+  } catch (err: any) {
+    logger.error(err, "Quote generation failed");
+    res.status(500).json({ error: "خطأ في توليد عرض السعر" });
   }
 });
 
