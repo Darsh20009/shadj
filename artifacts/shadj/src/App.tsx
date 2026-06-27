@@ -23,6 +23,7 @@ const AdminAnalytics  = lazy(() => import("@/pages/admin/analytics"));
 const AdminMessages   = lazy(() => import("@/pages/admin/messages"));
 const AdminAITools    = lazy(() => import("@/pages/admin/ai-tools"));
 const AdminResources  = lazy(() => import("@/pages/admin/resources"));
+const AdminFinances   = lazy(() => import("@/pages/admin/finances"));
 const NotFound        = lazy(() => import("@/pages/not-found"));
 
 setAuthTokenGetter(() => localStorage.getItem("shadj_token"));
@@ -75,6 +76,9 @@ function Router() {
         </Route>
         <Route path="/admin/resources">
           <AdminLayout><AdminResources /></AdminLayout>
+        </Route>
+        <Route path="/admin/finances">
+          <AdminLayout><AdminFinances /></AdminLayout>
         </Route>
 
         <Route path="/">

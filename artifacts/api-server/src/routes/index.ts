@@ -8,6 +8,7 @@ import analyticsRouter from "./analytics";
 import aiRouter from "./ai";
 import emailRouter from "./email";
 import messagesRouter from "./messages";
+import financesRouter from "./finances";
 
 const router: IRouter = Router();
 
@@ -20,5 +21,6 @@ router.use("/analytics", analyticsRouter);
 router.use("/ai", aiRouter);
 router.use("/email", emailRouter);
 router.use("/messages", messagesRouter);
+router.use("/finances", financesRouter);
 
 export default router;

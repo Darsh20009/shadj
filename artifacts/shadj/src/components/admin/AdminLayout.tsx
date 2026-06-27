@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { Link, useLocation } from "wouter";
 import { useGetMe, useLogout } from "@workspace/api-client-react";
-import { LayoutDashboard, Image as ImageIcon, ShoppingBag, Users, BarChart3, LogOut, Loader2, ExternalLink, Menu, Mail, Sparkles, BookOpen } from "lucide-react";
+import { LayoutDashboard, Image as ImageIcon, ShoppingBag, Users, BarChart3, LogOut, Loader2, ExternalLink, Menu, Mail, Sparkles, BookOpen, Coins } from "lucide-react";
 import { AdminWelcomeJoke } from "./AdminWelcomeJoke";
 
 function useUnreadCount(token: string | null) {
@@ -152,14 +152,15 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
   }
 
   const navItems: NavItem[] = [
-    { href: "/admin",           label: "لوحة التحكم",            icon: LayoutDashboard, badge: 0 },
-    { href: "/admin/portfolio", label: "الأعمال",                icon: ImageIcon,       badge: 0 },
-    { href: "/admin/orders",    label: "الطلبات",                icon: ShoppingBag,     badge: 0 },
-    { href: "/admin/messages",  label: "المراسلات",              icon: Mail,            badge: unreadCount },
-    { href: "/admin/ai-tools",  label: "أدوات الذكاء الاصطناعي", icon: Sparkles,        badge: 0 },
-    { href: "/admin/resources", label: "موارد المصمم",           icon: BookOpen,        badge: 0 },
-    { href: "/admin/users",     label: "المستخدمين",             icon: Users,           badge: 0 },
-    { href: "/admin/analytics", label: "الإحصائيات",             icon: BarChart3,       badge: 0 },
+    { href: "/admin",            label: "لوحة التحكم",            icon: LayoutDashboard, badge: 0 },
+    { href: "/admin/portfolio",  label: "الأعمال",                icon: ImageIcon,       badge: 0 },
+    { href: "/admin/orders",     label: "الطلبات",                icon: ShoppingBag,     badge: 0 },
+    { href: "/admin/messages",   label: "المراسلات",              icon: Mail,            badge: unreadCount },
+    { href: "/admin/finances",   label: "المكاسب المالية",        icon: Coins,           badge: 0 },
+    { href: "/admin/ai-tools",   label: "أدوات الذكاء الاصطناعي", icon: Sparkles,        badge: 0 },
+    { href: "/admin/resources",  label: "موارد المصمم",           icon: BookOpen,        badge: 0 },
+    { href: "/admin/users",      label: "المستخدمين",             icon: Users,           badge: 0 },
+    { href: "/admin/analytics",  label: "الإحصائيات",             icon: BarChart3,       badge: 0 },
   ];
 
   return (
