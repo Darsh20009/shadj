@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useQueryClient } from "@tanstack/react-query";
 import { getListOrdersQueryKey } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
-import { Search, Calendar, DollarSign, ChevronDown, ChevronUp, Mail, Copy, Check } from "lucide-react";
+import { Search, Calendar, DollarSign, ChevronDown, ChevronUp, Mail, Copy, Check, Phone } from "lucide-react";
 
 const STATUS: Record<string, { label: string; color: string }> = {
   pending:     { label: "قيد الانتظار",  color: "bg-amber-100 text-amber-800 border-amber-200" },
@@ -200,6 +200,18 @@ export default function AdminOrders() {
                         <Mail size={14} />
                         رد بالبريد
                       </a>
+
+                      {order.clientPhone && (() => {
+                        const clean = String(order.clientPhone).replace(/\s|-/g, "").replace(/^00/, "+").replace(/^\+/, "");
+                        const waLink = `https://wa.me/${clean}?text=${encodeURIComponent(`أهلاً ${order.clientName}! 👋\nأنا شهد من شَدِج للتصميم، بخصوص طلبك (${order.designType}) 🎨\nهتكلمك عن التفاصيل إن شاء الله.`)}`;
+                        return (
+                          <a href={waLink} target="_blank" rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1ebe5a] text-white px-4 py-2 rounded-xl font-bold text-sm transition-colors">
+                            <Phone size={14} />
+                            واتساب
+                          </a>
+                        );
+                      })()}
 
                       <CopyButton text={`${order.clientName} | ${order.clientEmail} | ${order.designType}`} />
                     </div>

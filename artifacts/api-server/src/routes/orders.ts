@@ -2,7 +2,7 @@ import { Router } from "express";
 import { logger } from "../lib/logger";
 import { OrderModel, serializeOrder } from "../lib/mongodb";
 import { requireAuth, requireAdmin, ADMIN_ROLES } from "../lib/auth-middleware";
-import { notifyNewOrder, notifyOrderStatusChange } from "../lib/notify";
+import { notifyNewOrder, notifyOrderStatusChange, notifyClientOrderConfirmation } from "../lib/notify";
 
 const router = Router();
 
@@ -46,6 +46,13 @@ router.post("/", async (req, res) => {
       description: order.description,
       budget: order.budget,
       deadline: order.deadline,
+    }).catch(() => {});
+
+    notifyClientOrderConfirmation({
+      clientName: order.clientName,
+      clientEmail: order.clientEmail,
+      designType: order.designType,
+      description: order.description,
     }).catch(() => {});
 
     res.status(201).json(serializeOrder(order));

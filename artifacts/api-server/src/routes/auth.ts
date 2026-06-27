@@ -127,10 +127,43 @@ router.post("/register/verify-otp", async (req, res) => {
   }
 });
 
+router.post("/register/direct", async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+    if (!name?.trim() || !email?.trim() || !password) {
+      return void res.status(400).json({ error: "الاسم والبريد الإلكتروني وكلمة المرور مطلوبة" });
+    }
+    if (password.length < 6) {
+      return void res.status(400).json({ error: "كلمة المرور يجب أن تكون 6 أحرف على الأقل" });
+    }
+    const emailLower = email.toLowerCase().trim();
+    const existing = await UserModel.findOne({ email: emailLower });
+    if (existing) {
+      return void res.status(409).json({ error: "هذا البريد الإلكتروني مسجل بالفعل" });
+    }
+    const user = await UserModel.create({
+      name: name.trim(),
+      email: emailLower,
+      passwordHash: hashPassword(password),
+      role: "client",
+    });
+    const token = generateToken();
+    sessions.set(token, String(user._id));
+
+    sendWelcomeEmail(emailLower, name.trim()).catch(() => {});
+    notifyNewRegistration({ name: name.trim(), email: emailLower }).catch(() => {});
+
+    res.status(201).json({ token, user: serializeUser(user) });
+  } catch (err) {
+    logger.error(err, "Direct register failed");
+    res.status(500).json({ error: "خطأ في إنشاء الحساب، حاول مرة أخرى" });
+  }
+});
+
 router.post("/register", async (_req, res) => {
   return void res.status(400).json({
-    error: "يرجى استخدام /api/auth/register/send-otp ثم /api/auth/register/verify-otp",
-    requiresOTP: true,
+    error: "يرجى استخدام /api/auth/register/direct",
+    requiresOTP: false,
   });
 });
 

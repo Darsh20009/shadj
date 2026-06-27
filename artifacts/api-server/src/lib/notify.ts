@@ -153,6 +153,45 @@ export async function notifyOrderStatusChange(order: {
   }
 }
 
+export async function notifyClientOrderConfirmation(order: {
+  clientName: string;
+  clientEmail: string;
+  designType: string;
+  description: string;
+}) {
+  try {
+    const html = wrap(`
+      <div class="badge">شكراً لثقتك في شَدِج! 🎉</div>
+      <h2 style="color:#e2b979; font-size:22px; margin:0 0 8px; font-weight:900;">
+        وصلنا طلبك يا ${order.clientName}! ✅
+      </h2>
+      <p style="color:#aaa; font-size:14px; margin:0 0 22px; line-height:1.9;">
+        أهلاً وسهلاً بيك في عيلة شَدِج 🎨<br>
+        شكراً جداً لاختيارك إيانا — الطلب وصلنا ومش هنضيعه 😄<br>
+        فريقنا هيراجع تفاصيلك دلوقتي وهيتواصل معاك في أقرب وقت.
+      </p>
+      ${infoRow("نوع التصميم", `<span style="color:#e2b979; font-weight:bold">${order.designType}</span>`)}
+      <div class="highlight">
+        <p style="color:#888; font-size:11px; margin:0 0 6px; text-transform:uppercase; letter-spacing:1px;">تفاصيل طلبك</p>
+        <p style="color:#ccc; font-size:14px; margin:0; line-height:1.8;">${order.description}</p>
+      </div>
+      <p style="color:#555; font-size:13px; margin:22px 0 0; line-height:1.8;">
+        لو عندك أي استفسار، تقدر تتواصل معانا على:<br>
+        <a href="mailto:gfx@shadj-graphics.space" style="color:#e2b979; text-decoration:none; font-weight:bold;">gfx@shadj-graphics.space</a>
+      </p>
+      <a href="https://shadj-graphics.space/dashboard" class="btn">تابع طلبك من هنا ←</a>
+    `, "🎨");
+    await smtp2goSend({
+      to: order.clientEmail,
+      subject: `✅ وصلنا طلبك يا ${order.clientName} — شَدِج للتصميم`,
+      html,
+    });
+    logger.info({ to: order.clientEmail }, "Order confirmation sent to client");
+  } catch (err) {
+    logger.error({ err }, "Failed to send order confirmation to client");
+  }
+}
+
 export async function notifyNewRegistration(user: { name: string; email: string }) {
   try {
     const html = wrap(`
