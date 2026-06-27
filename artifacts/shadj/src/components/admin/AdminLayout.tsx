@@ -48,6 +48,9 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
     setShowJoke(false);
   }, [user]);
 
+  const token = typeof window !== "undefined" ? localStorage.getItem("shadj_token") : null;
+  const unreadCount = useUnreadCount(token);
+
   if (isLoading || !user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0f0e1a]">
@@ -59,8 +62,6 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
   if (showJoke) {
     return <AdminWelcomeJoke name={user.name} onEnter={handleJokeEnter} />;
   }
-
-  const unreadCount = useUnreadCount(localStorage.getItem("shadj_token"));
 
   const navItems = [
     { href: "/admin", label: "لوحة التحكم", icon: LayoutDashboard, badge: 0 },

@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useListOrders, useUpdateOrder } from "@workspace/api-client-react";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useQueryClient } from "@tanstack/react-query";
 import { getListOrdersQueryKey } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
-import { Search, Calendar, DollarSign, ChevronDown, ChevronUp, Copy, Check, Phone, Send, X, ClipboardList, FileText, RefreshCw } from "lucide-react";
+import { Search, Calendar, DollarSign, ChevronDown, ChevronUp, Copy, Check, Phone, Send, X, ClipboardList, FileText, RefreshCw, Plus, User, UserPlus, Sparkles } from "lucide-react";
 
 const DELIVERY_CHECKLISTS: Record<string, string[]> = {
   "هوية بصرية": [
@@ -343,6 +343,276 @@ function QuickMessageModal({ data, onClose }: { data: QuickMsgModal; onClose: ()
   );
 }
 
+const DESIGN_TYPES = [
+  "هوية بصرية", "بوسترات", "سوشيال ميديا", "تصميم فيديوهات",
+  "حملات إعلانية", "مطبوعات", "تصميم موقع", "أخرى",
+];
+
+interface ExistingClient { id: string; name: string; email: string; phone?: string | null; }
+
+function CreateOrderModal({ onClose, onCreated }: { onClose: () => void; onCreated: () => void }) {
+  const { toast } = useToast();
+  const [step, setStep] = useState<"client" | "order">("client");
+  const [mode, setMode] = useState<"existing" | "new">("existing");
+  const [clientSearch, setClientSearch] = useState("");
+  const [clients, setClients] = useState<ExistingClient[]>([]);
+  const [loadingClients, setLoadingClients] = useState(false);
+  const [selectedClient, setSelectedClient] = useState<ExistingClient | null>(null);
+
+  const [newName, setNewName] = useState("");
+  const [newEmail, setNewEmail] = useState("");
+  const [newPhone, setNewPhone] = useState("");
+
+  const [designType, setDesignType] = useState("");
+  const [description, setDescription] = useState("");
+  const [budget, setBudget] = useState("");
+  const [deadline, setDeadline] = useState("");
+  const [references, setReferences] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (mode !== "existing") return;
+    setLoadingClients(true);
+    const token = localStorage.getItem("shadj_token") || "";
+    fetch("/api/users", { headers: { Authorization: `Bearer ${token}` } })
+      .then(r => r.json())
+      .then((data: ExistingClient[]) => setClients(data.filter((u: any) => u.role === "client")))
+      .catch(() => {})
+      .finally(() => setLoadingClients(false));
+  }, [mode]);
+
+  const filteredClients = clients.filter(c =>
+    !clientSearch ||
+    c.name.toLowerCase().includes(clientSearch.toLowerCase()) ||
+    c.email.toLowerCase().includes(clientSearch.toLowerCase())
+  );
+
+  function goToOrder() {
+    if (mode === "existing" && !selectedClient) {
+      toast({ title: "اختر عميلاً أولاً", variant: "destructive" }); return;
+    }
+    if (mode === "new") {
+      if (!newName.trim() || !newEmail.trim()) {
+        toast({ title: "الاسم والبريد مطلوبان", variant: "destructive" }); return;
+      }
+    }
+    setStep("order");
+  }
+
+  async function handleSubmit() {
+    if (!designType || !description.trim()) {
+      toast({ title: "نوع التصميم والوصف مطلوبان", variant: "destructive" }); return;
+    }
+    const clientName = mode === "existing" ? selectedClient!.name : newName.trim();
+    const clientEmail = mode === "existing" ? selectedClient!.email : newEmail.toLowerCase().trim();
+    const clientPhone = mode === "existing" ? (selectedClient!.phone || undefined) : (newPhone.trim() || undefined);
+
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ clientName, clientEmail, clientPhone, designType, description: description.trim(), budget: budget || undefined, deadline: deadline || undefined, references: references.trim() || undefined }),
+      });
+      if (!res.ok) {
+        const d = await res.json();
+        throw new Error(d.error || "خطأ");
+      }
+      toast({ title: "✅ تم إنشاء الطلب بنجاح" });
+      onCreated();
+      onClose();
+    } catch (e: any) {
+      toast({ title: `❌ ${e.message}`, variant: "destructive" });
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  const inputCls = "w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#3730A3] focus:ring-2 focus:ring-[#3730A3]/10 transition-all";
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" dir="rtl">
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100"
+          style={{ background: "linear-gradient(135deg,#0f0e1a,#1e1b4b)" }}>
+          <div>
+            <h2 className="font-black text-base text-white flex items-center gap-2">
+              <Sparkles size={16} className="text-[#F5E6C8]" />
+              إنشاء طلب جديد للعميل
+            </h2>
+            <p className="text-xs text-gray-400 mt-0.5">
+              {step === "client" ? "الخطوة ١ — اختيار العميل" : "الخطوة ٢ — تفاصيل الطلب"}
+            </p>
+          </div>
+          <button onClick={onClose} className="text-gray-400 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-colors">
+            <X size={18} />
+          </button>
+        </div>
+
+        {/* Steps indicator */}
+        <div className="flex border-b border-gray-100">
+          {(["client", "order"] as const).map((s, i) => (
+            <div key={s} className={`flex-1 py-2.5 text-center text-xs font-bold transition-colors ${step === s ? "text-[#3730A3] border-b-2 border-[#3730A3]" : "text-gray-400"}`}>
+              {i + 1}. {s === "client" ? "العميل" : "الطلب"}
+            </div>
+          ))}
+        </div>
+
+        <div className="p-5">
+          {step === "client" && (
+            <div className="space-y-4">
+              {/* Mode toggle */}
+              <div className="grid grid-cols-2 gap-2">
+                <button onClick={() => { setMode("existing"); setSelectedClient(null); }}
+                  className={`flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold border-2 transition-all ${mode === "existing" ? "border-[#3730A3] bg-[#3730A3]/5 text-[#3730A3]" : "border-gray-200 text-gray-500 hover:border-gray-300"}`}>
+                  <User size={16} /> عميل موجود
+                </button>
+                <button onClick={() => { setMode("new"); setSelectedClient(null); }}
+                  className={`flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold border-2 transition-all ${mode === "new" ? "border-[#3730A3] bg-[#3730A3]/5 text-[#3730A3]" : "border-gray-200 text-gray-500 hover:border-gray-300"}`}>
+                  <UserPlus size={16} /> عميل جديد
+                </button>
+              </div>
+
+              {mode === "existing" && (
+                <div>
+                  <div className="relative mb-3">
+                    <Search size={15} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <input value={clientSearch} onChange={e => setClientSearch(e.target.value)}
+                      placeholder="ابحث بالاسم أو البريد..." className={inputCls + " pr-9"} />
+                  </div>
+                  {loadingClients ? (
+                    <div className="text-center py-6 text-gray-400 text-sm">
+                      <div className="w-5 h-5 border-2 border-[#3730A3] border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+                      جاري التحميل...
+                    </div>
+                  ) : (
+                    <div className="max-h-56 overflow-y-auto space-y-1.5 rounded-xl border border-gray-100 p-2">
+                      {filteredClients.length === 0 ? (
+                        <p className="text-center text-gray-400 text-sm py-4">لا يوجد عملاء</p>
+                      ) : filteredClients.map(c => (
+                        <button key={c.id} onClick={() => setSelectedClient(c)}
+                          className={`w-full flex items-center gap-3 p-3 rounded-xl text-right transition-all ${selectedClient?.id === c.id ? "bg-[#3730A3] text-white" : "hover:bg-gray-50"}`}>
+                          <div className={`w-9 h-9 rounded-lg flex items-center justify-center font-black text-sm shrink-0 ${selectedClient?.id === c.id ? "bg-white/20 text-white" : "bg-[#3730A3]/10 text-[#3730A3]"}`}>
+                            {c.name[0]}
+                          </div>
+                          <div className="flex-1 min-w-0 text-right">
+                            <p className={`font-bold text-sm ${selectedClient?.id === c.id ? "text-white" : "text-[#1a1a2e]"}`}>{c.name}</p>
+                            <p className={`text-xs truncate ${selectedClient?.id === c.id ? "text-white/70" : "text-gray-400"}`} dir="ltr">{c.email}</p>
+                          </div>
+                          {selectedClient?.id === c.id && <Check size={16} className="text-[#F5E6C8] shrink-0" />}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {selectedClient && (
+                    <div className="mt-3 p-3 bg-[#3730A3]/5 border border-[#3730A3]/20 rounded-xl flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-[#3730A3] text-white font-black text-sm flex items-center justify-center shrink-0">{selectedClient.name[0]}</div>
+                      <div>
+                        <p className="text-sm font-bold text-[#1a1a2e]">{selectedClient.name}</p>
+                        <p className="text-xs text-gray-500" dir="ltr">{selectedClient.email}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {mode === "new" && (
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-xs font-bold text-gray-600 mb-1.5">الاسم الكامل *</label>
+                    <input value={newName} onChange={e => setNewName(e.target.value)} placeholder="اسم العميل" className={inputCls} />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-600 mb-1.5">البريد الإلكتروني *</label>
+                    <input value={newEmail} onChange={e => setNewEmail(e.target.value)} placeholder="client@email.com" className={inputCls} dir="ltr" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-600 mb-1.5">رقم الهاتف (اختياري)</label>
+                    <input value={newPhone} onChange={e => setNewPhone(e.target.value)} placeholder="+20 11 xxxx xxxx" className={inputCls} dir="ltr" />
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {step === "order" && (
+            <div className="space-y-3">
+              {/* Client summary */}
+              <div className="p-3 bg-gray-50 rounded-xl border border-gray-100 flex items-center gap-3 mb-4">
+                <div className="w-8 h-8 rounded-lg bg-[#3730A3] text-white font-black text-sm flex items-center justify-center shrink-0">
+                  {(mode === "existing" ? selectedClient!.name : newName)[0]}
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-[#1a1a2e]">{mode === "existing" ? selectedClient!.name : newName}</p>
+                  <p className="text-xs text-gray-500" dir="ltr">{mode === "existing" ? selectedClient!.email : newEmail}</p>
+                </div>
+                <button onClick={() => setStep("client")} className="mr-auto text-xs text-[#3730A3] font-bold hover:underline">تغيير</button>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-600 mb-1.5">نوع التصميم *</label>
+                <select value={designType} onChange={e => setDesignType(e.target.value)} className={inputCls + " bg-white"}>
+                  <option value="">— اختر نوع التصميم —</option>
+                  {DESIGN_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-600 mb-1.5">وصف المشروع *</label>
+                <textarea value={description} onChange={e => setDescription(e.target.value)} rows={3}
+                  placeholder="اكتب تفاصيل المشروع وما يحتاجه العميل..." className={inputCls + " resize-none"} />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 mb-1.5">الميزانية (اختياري)</label>
+                  <input value={budget} onChange={e => setBudget(e.target.value)} placeholder="مثال: 500 جنيه" className={inputCls} />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 mb-1.5">الموعد النهائي (اختياري)</label>
+                  <input type="date" value={deadline} onChange={e => setDeadline(e.target.value)} className={inputCls} />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-600 mb-1.5">مراجع / ملاحظات (اختياري)</label>
+                <input value={references} onChange={e => setReferences(e.target.value)} placeholder="روابط أو ملاحظات خاصة..." className={inputCls} />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className="px-5 pb-5 flex gap-3">
+          {step === "client" ? (
+            <>
+              <button onClick={onClose} className="px-5 py-2.5 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium text-sm transition-colors">
+                إلغاء
+              </button>
+              <button onClick={goToOrder}
+                className="flex-1 flex items-center justify-center gap-2 bg-[#3730A3] hover:bg-[#1a1a2e] text-white py-2.5 rounded-xl font-bold text-sm transition-colors">
+                التالي — تفاصيل الطلب ←
+              </button>
+            </>
+          ) : (
+            <>
+              <button onClick={() => setStep("client")} className="px-5 py-2.5 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium text-sm transition-colors">
+                → رجوع
+              </button>
+              <button onClick={handleSubmit} disabled={submitting}
+                className="flex-1 flex items-center justify-center gap-2 bg-[#3730A3] hover:bg-[#1a1a2e] disabled:opacity-60 text-white py-2.5 rounded-xl font-bold text-sm transition-colors">
+                {submitting ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> جاري الإنشاء...</> : <><Plus size={15} /> إنشاء الطلب</>}
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function AdminOrders() {
   const { data: orders = [], isLoading } = useListOrders();
   const updateOrder = useUpdateOrder();
@@ -354,6 +624,7 @@ export default function AdminOrders() {
   const [msgModal, setMsgModal] = useState<QuickMsgModal | null>(null);
   const [checklistModal, setChecklistModal] = useState<{ designType: string; clientName: string } | null>(null);
   const [quoteModal, setQuoteModal] = useState<QuoteModal | null>(null);
+  const [createModal, setCreateModal] = useState(false);
 
   const handleStatusChange = (id: string, newStatus: string) => {
     updateOrder.mutate({ id, data: { status: newStatus } } as any, {
@@ -399,15 +670,30 @@ export default function AdminOrders() {
       {msgModal && <QuickMessageModal data={msgModal} onClose={() => setMsgModal(null)} />}
       {checklistModal && <DeliveryChecklistModal {...checklistModal} onClose={() => setChecklistModal(null)} />}
       {quoteModal && <QuoteGeneratorModal data={quoteModal} onClose={() => setQuoteModal(null)} />}
+      {createModal && (
+        <CreateOrderModal
+          onClose={() => setCreateModal(false)}
+          onCreated={() => queryClient.invalidateQueries({ queryKey: getListOrdersQueryKey() })}
+        />
+      )}
 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-black text-[#1a1a2e]">إدارة الطلبات</h1>
           <p className="text-gray-500 mt-1">{orders.length} طلب إجمالي</p>
         </div>
-        <div className="flex items-center gap-2 bg-[#3730A3]/5 border border-[#3730A3]/20 text-[#3730A3] px-4 py-2.5 rounded-xl text-sm font-medium">
-          <div className="w-2 h-2 rounded-full bg-[#3730A3] animate-pulse" />
-          كل الطلبات تصلك إشعار فوري على بريدك
+        <div className="flex items-center gap-3 flex-wrap">
+          <button
+            onClick={() => setCreateModal(true)}
+            className="flex items-center gap-2 bg-[#3730A3] hover:bg-[#1a1a2e] text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-colors shadow-lg shadow-[#3730A3]/25"
+          >
+            <Plus size={16} />
+            إنشاء طلب للعميل
+          </button>
+          <div className="flex items-center gap-2 bg-[#3730A3]/5 border border-[#3730A3]/20 text-[#3730A3] px-4 py-2.5 rounded-xl text-sm font-medium">
+            <div className="w-2 h-2 rounded-full bg-[#3730A3] animate-pulse" />
+            إشعار فوري بكل طلب
+          </div>
         </div>
       </div>
 
