@@ -1,14 +1,21 @@
 {
   "name": "شَـــدِج للجرافيك",
-  "short_name": "شَـــدِج",
-  "description": "وكالة تصميم جرافيك احترافية — هوية بصرية، بوسترات، سوشيال ميديا",
+  "short_name": "شَدِج",
+  "description": "أفضل وكالة تصميم جرافيك في مصر والسعودية والوطن العربي — هوية بصرية، بوسترات، سوشيال ميديا",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0f0e1a",
-  "theme_color": "#3730A3",
+  "theme_color": "#e2b979",
   "lang": "ar",
   "dir": "rtl",
+  "orientation": "portrait-primary",
+  "categories": ["design", "business", "productivity"],
   "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 48x48 32x32 16x16",
+      "type": "image/x-icon"
+    },
     {
       "src": "/icon-192.png",
       "sizes": "192x192",
@@ -35,6 +42,5 @@
     }
   ],
   "screenshots": [],
-  "categories": ["design", "business"],
   "related_applications": []
 }

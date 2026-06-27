@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: shadj-api
+    runtime: node
+    region: frankfurt
+    plan: free
+    buildCommand: pnpm install --frozen-lockfile && pnpm --filter @workspace/shadj run build && pnpm --filter @workspace/api-server run build
+    startCommand: node artifacts/api-server/dist/index.mjs
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        sync: false
+      - key: MOONSHOT_API_KEY
+        sync: false
+      - key: SMTP2GO_API_KEY
+        sync: false

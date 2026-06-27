@@ -1,5 +1,6 @@
 import path from "path";
 import { existsSync } from "fs";
+import { fileURLToPath } from "url";
 import express, { type Express } from "express";
 import cors from "cors";
 import pinoHttp from "pino-http";
@@ -33,7 +34,14 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", router);
 
-const frontendDist = path.join(process.cwd(), "artifacts/shadj/dist/public");
+// Resolve frontend dist relative to THIS compiled file (artifacts/api-server/dist/index.mjs)
+// so it works regardless of CWD (critical for Render.com deployments)
+const __dirnameSafe = typeof import.meta.dirname !== "undefined"
+  ? import.meta.dirname
+  : path.dirname(fileURLToPath(import.meta.url));
+
+// From artifacts/api-server/dist/ → ../../../ → workspace root → artifacts/shadj/dist/public
+const frontendDist = path.resolve(__dirnameSafe, "../../../artifacts/shadj/dist/public");
 
 if (existsSync(frontendDist)) {
   app.use(
