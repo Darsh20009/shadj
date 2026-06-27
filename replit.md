@@ -1,36 +1,48 @@
-# [Project name]
+# Shadj Graphics — شَـدِج
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+وكالة تصميم جرافيك عربية — موقع كامل مع لوحة إدارة للادمن، نظام طلبات، AI tools، ومراسلات.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
-- `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- Frontend dev server: `cd artifacts/shadj && pnpm dev` (port 5000, Vite HMR)
+- Backend API: `cd artifacts/api-server && PORT=8080 pnpm dev` (port 8080, Express)
+- **بعد أي تعديل على كود الـ frontend، لازم تعيد البناء:** `cd artifacts/shadj && pnpm build`
+  - السبب: الـ backend يخدم الـ frontend من `artifacts/shadj/dist/public` — بدون rebuild المستخدم يرى الكود القديم
+- Admin login: `admin@shadj-graphics.space` / `123456`
+- Required env: `MONGODB_URI`, `MOONSHOT_API_KEY`
 
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- Frontend: React 19 + Vite 7 + Tailwind CSS + shadcn/ui
+- Backend: Express 5 + MongoDB + Mongoose
+- Auth: in-memory sessions Map (no JWT library), token in localStorage as `shadj_token`
+- AI: Moonshot API at `https://api.moonshot.ai/v1`, model `moonshot-v1-32k`
+- Email: SMTP2Go HTTP API
+- API client: Orval-generated hooks in `@workspace/api-client-react`
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- Frontend pages: `artifacts/shadj/src/pages/`
+- Admin pages: `artifacts/shadj/src/pages/admin/`
+- Admin layout (sidebar): `artifacts/shadj/src/components/admin/AdminLayout.tsx`
+- Backend routes: `artifacts/api-server/src/routes/`
+- MongoDB models: inside route files (no separate models folder)
+- Built frontend: `artifacts/shadj/dist/public/` (served by backend)
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Backend serves frontend static files from `dist/public` for production — same server, no separate static host
+- Sessions are in-memory Map (not Redis/DB) — lost on server restart
+- No Drizzle/PostgreSQL — fully migrated to Mongoose/MongoDB
+- `AdminSidebar` is a standalone component outside `AdminLayout` — must not be defined inside render (causes React to remount it every render and lose items)
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- Public site: home, portfolio, about, order form, login/register
+- Client dashboard: track own orders
+- Admin panel (8 pages): dashboard, portfolio mgmt, orders mgmt + manual order creation, messages, AI tools, design resources, user mgmt, analytics
+- AI features: design brief generator, color suggester, social captions, pricing calculator
 
 ## User preferences
 
@@ -38,7 +50,12 @@ _Populate as you build — explicit user instructions worth remembering across s
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- **CRITICAL: After editing any frontend file → run `cd artifacts/shadj && pnpm build` then hard-refresh browser (Ctrl+Shift+R)**
+- Admin sidebar items missing? → Almost certainly a stale dist build. Rebuild.
+- `AdminSidebar` must be defined OUTSIDE `AdminLayout` function — defining it inside causes React to treat it as a new component type each render
+- `useUnreadCount` hook must be called before any conditional returns in `AdminLayout`
+- Sessions are in-memory — admin must re-login after backend restart
+- WhatsApp contact: wa.me/201129085243 (no floating button, no mailto links)
 
 ## Pointers
 

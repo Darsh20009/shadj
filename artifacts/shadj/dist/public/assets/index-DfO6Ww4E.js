@@ -1,0 +1,1 @@
+import{f as t}from"./index-Dd68gfZT.js";import{r as s}from"./router-muPsCCw-.js";const o=[["path",{d:"M5 12h14",key:"1ays0h"}],["path",{d:"M12 5v14",key:"s699le"}]],n=t("plus",o);function i(r){const e=s.useRef({value:r,previous:r});return s.useMemo(()=>(e.current.value!==r&&(e.current.previous=e.current.value,e.current.value=r),e.current.previous),[r])}export{n as P,i as u};

@@ -1,4 +1,5 @@
 - [Shadj project setup](shadj-setup.md) — full-stack Arabic graphic design agency site, real posters at /posters/poster_01-46.png, admin login in topic file.
+- [Frontend build requirement](frontend-build.md) — backend serves frontend from dist/public; MUST run `cd artifacts/shadj && pnpm build` after ANY frontend edit or users see stale UI.
 - [MongoDB migration](mongodb-migration.md) — backend fully migrated from Drizzle/PostgreSQL to Mongoose/MongoDB; seedIfEmpty only creates admin if not exists (no longer resets password on restart).
 - [Email and AI integration](email-ai-integration.md) — SMTP2Go HTTP API for email, Moonshot AI (.ai domain) for chat, OTP flow for registration; notify.ts sends admin alerts to hsvshzvbxj@gmail.com.
 - [Auth and routing security](auth-security.md) — lib/auth-middleware.ts with requireAuth/requireAdmin/optionalAuth; sessions Map exported from routes/auth.ts; client orders filtered by email; all write routes protected.
