@@ -1,7 +1,7 @@
 import { logger } from "./logger";
 
 const SMTP2GO_API_KEY = process.env["SMTP2GO_API_KEY"];
-const FROM_EMAIL = "gfx@shadj-graphics.space";
+const FROM_EMAIL = "noreply@shadj-graphics.space";
 const FROM_NAME = "شَـدِج للتصميم";
 
 async function smtp2goSend(opts: { to: string; subject: string; html: string }) {
