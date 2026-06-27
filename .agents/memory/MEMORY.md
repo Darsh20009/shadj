@@ -2,4 +2,4 @@
 - [MongoDB migration](mongodb-migration.md) — backend fully migrated from Drizzle/PostgreSQL to Mongoose/MongoDB; seedIfEmpty only creates admin if not exists (no longer resets password on restart).
 - [Email and AI integration](email-ai-integration.md) — SMTP2Go HTTP API for email, Moonshot AI (.ai domain) for chat, OTP flow for registration; notify.ts sends admin alerts to hsvshzvbxj@gmail.com.
 - [Auth and routing security](auth-security.md) — lib/auth-middleware.ts with requireAuth/requireAdmin/optionalAuth; sessions Map exported from routes/auth.ts; client orders filtered by email; all write routes protected.
-- [No external links policy](no-external-links.md) — ALL WhatsApp external links removed across all pages; replaced with /order and mailto:gfx@shadj-graphics.space; WhatsAppButton replaced with internal /order FAB button.
+- [Contact policy](contact-policy.md) — All mailto: links replaced with wa.me/201129085243; support/inquiries go to WhatsApp +20 112 908 5243; no floating WhatsApp button (FAB); order submission is internal via /order page.

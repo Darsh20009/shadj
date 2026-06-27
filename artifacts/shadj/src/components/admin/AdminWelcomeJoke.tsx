@@ -20,6 +20,7 @@ export function AdminWelcomeJoke({ name, onEnter }: Props) {
       const t = setTimeout(onEnter, 600);
       return () => clearTimeout(t);
     }
+    return undefined;
   }, [stage, onEnter]);
 
   return (
