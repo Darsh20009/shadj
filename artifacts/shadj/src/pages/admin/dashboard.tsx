@@ -1,4 +1,5 @@
-import { useGetStats, useGetActiveUsers, useGetVisitorLogs } from "@workspace/api-client-react";
+import { useGetStats, useGetActiveUsers, useGetVisitorLogs, useGetMe } from "@workspace/api-client-react";
+import { getTimeGreeting } from "@/lib/greeting";
 import { Users, Briefcase, ShoppingBag, Eye, Clock, Activity, TrendingUp } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from "recharts";
 
@@ -16,6 +17,7 @@ export default function AdminDashboard() {
   const { data: stats, isLoading: statsLoading } = useGetStats();
   const { data: activeUsers } = useGetActiveUsers();
   const { data: logs = [] } = useGetVisitorLogs({ limit: 500 });
+  const { data: me } = useGetMe();
 
   const weekData = Array.from({ length: 7 }, (_, i) => {
     const d = new Date();
@@ -63,8 +65,12 @@ export default function AdminDashboard() {
     <div className="p-6 md:p-8 space-y-8" dir="rtl">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-black text-[#1a1a2e]">لوحة التحكم</h1>
-          <p className="text-gray-400 text-sm mt-0.5">مرحباً بك في إدارة شَـــدِج للجرافيك</p>
+          {me ? (() => { const g = getTimeGreeting(me.name); return (
+            <>
+              <h1 className="text-2xl font-black text-[#1a1a2e]">{g.headline}</h1>
+              <p className="text-gray-400 text-sm mt-0.5">{g.sub}</p>
+            </>
+          ); })() : <h1 className="text-2xl font-black text-[#1a1a2e]">لوحة التحكم</h1>}
         </div>
         <div className="flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 px-4 py-2 rounded-full text-sm font-medium">
           <span className="relative flex h-2.5 w-2.5">

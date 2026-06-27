@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Sparkles, Lightbulb, Palette, Share2, Zap, Copy, Check, RefreshCw, ChevronDown } from "lucide-react";
+import { Sparkles, Lightbulb, Palette, Share2, Zap, Copy, Check, RefreshCw, ChevronDown, Tag, Calculator, Ruler } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 function token() { return localStorage.getItem("shadj_token") || ""; }
@@ -85,6 +85,66 @@ export default function AdminAITools() {
   const [brandForm, setBrandForm] = useState({ brandName: "", description: "", competitors: "" });
   const [brandResult, setBrandResult] = useState("");
   const [brandLoading, setBrandLoading] = useState(false);
+
+  const [taglineForm, setTaglineForm] = useState({ brandName: "", industry: "", tone: "جريء وملهم" });
+  const [taglineResult, setTaglineResult] = useState("");
+  const [taglineLoading, setTaglineLoading] = useState(false);
+
+  const PRICING_TYPES: Record<string, [number, number]> = {
+    "هوية بصرية": [1500, 5000],
+    "بوسترات": [200, 800],
+    "سوشيال ميديا": [800, 3000],
+    "حملات إعلانية": [2000, 8000],
+    "تصميم فيديوهات": [1500, 6000],
+    "مطبوعات": [300, 1500],
+  };
+  const COMPLEXITY_MUL = [1, 1.3, 1.7, 2.2, 3];
+  const [priceType, setPriceType] = useState("هوية بصرية");
+  const [priceComplexity, setPriceComplexity] = useState(2);
+  const [priceUrgent, setPriceUrgent] = useState(false);
+  const [priceRevisions, setPriceRevisions] = useState(2);
+
+  const calcPrice = () => {
+    const [low, high] = PRICING_TYPES[priceType] || [500, 2000];
+    const mul = COMPLEXITY_MUL[priceComplexity - 1] || 1;
+    const urgencyMul = priceUrgent ? 1.5 : 1;
+    const revisionMul = priceRevisions > 2 ? 1 + (priceRevisions - 2) * 0.1 : 1;
+    return {
+      min: Math.round(low * mul * urgencyMul * revisionMul / 50) * 50,
+      max: Math.round(high * mul * urgencyMul * revisionMul / 50) * 50,
+    };
+  };
+
+  const PLATFORM_SIZES = [
+    { platform: "إنستقرام", icon: "📸", sizes: [
+      { name: "بوست مربع", dims: "1080 × 1080", note: "1:1" },
+      { name: "بوست عمودي", dims: "1080 × 1350", note: "4:5" },
+      { name: "ستوري / ريلز", dims: "1080 × 1920", note: "9:16" },
+    ]},
+    { platform: "فيسبوك", icon: "👤", sizes: [
+      { name: "بوست شير", dims: "1200 × 628", note: "1.91:1" },
+      { name: "غلاف الصفحة", dims: "820 × 312", note: "—" },
+      { name: "ستوري", dims: "1080 × 1920", note: "9:16" },
+    ]},
+    { platform: "تيك توك", icon: "🎵", sizes: [
+      { name: "فيديو", dims: "1080 × 1920", note: "9:16" },
+      { name: "صورة غلاف", dims: "800 × 800", note: "1:1" },
+    ]},
+    { platform: "لينكدإن", icon: "💼", sizes: [
+      { name: "بوست", dims: "1200 × 627", note: "1.91:1" },
+      { name: "غلاف الشركة", dims: "1128 × 191", note: "—" },
+    ]},
+    { platform: "يوتيوب", icon: "▶️", sizes: [
+      { name: "ثامبنيل", dims: "1280 × 720", note: "16:9" },
+      { name: "غلاف القناة", dims: "2560 × 1440", note: "—" },
+    ]},
+    { platform: "مطبوعات", icon: "🖨️", sizes: [
+      { name: "A4", dims: "2480 × 3508 px", note: "210×297mm" },
+      { name: "A3", dims: "3508 × 4961 px", note: "297×420mm" },
+      { name: "كارت شخصي", dims: "1004 × 650 px", note: "85×55mm" },
+      { name: "بانر 3×1م", dims: "3000 × 1000 mm", note: "300dpi" },
+    ]},
+  ];
 
   async function run(endpoint: string, body: object, setResult: (v: string) => void, setLoading: (v: boolean) => void) {
     setLoading(true);
@@ -246,6 +306,104 @@ export default function AdminAITools() {
             {brandLoading ? <><RefreshCw size={14} className="animate-spin" /> جاري التحليل...</> : <><Zap size={14} /> تحليل البراند</>}
           </button>
           {brandResult && <ResultBox result={brandResult} />}
+        </ToolCard>
+
+        {/* 6. Tagline Generator */}
+        <ToolCard icon={<Tag size={22} />} color="#0ea5e9" title="مولّد التاج لاين والشعار" desc="7 خيارات تاج لاين مبدعة وقوية تحفر في ذاكرة العملاء">
+          <div className="grid grid-cols-3 gap-3 mb-3">
+            <div>
+              <label className="block text-xs font-bold text-gray-500 mb-1.5">اسم البراند</label>
+              <input value={taglineForm.brandName} onChange={e => setTaglineForm(f => ({ ...f, brandName: e.target.value }))} placeholder="مثال: شدج" className={inputCls} />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-gray-500 mb-1.5">المجال</label>
+              <input value={taglineForm.industry} onChange={e => setTaglineForm(f => ({ ...f, industry: e.target.value }))} placeholder="مثال: تصميم جرافيك" className={inputCls} />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-gray-500 mb-1.5">الطابع</label>
+              <select value={taglineForm.tone} onChange={e => setTaglineForm(f => ({ ...f, tone: e.target.value }))} className={inputCls}>
+                {["جريء وملهم", "بسيط وأنيق", "مرح وقريب", "فاخر وحصري", "إبداعي وغير تقليدي"].map(t => <option key={t}>{t}</option>)}
+              </select>
+            </div>
+          </div>
+          <button onClick={() => run("tagline", taglineForm, setTaglineResult, setTaglineLoading)} disabled={taglineLoading}
+            className={btnCls} style={{ background: "linear-gradient(135deg,#0ea5e9,#0284c7)" }}>
+            {taglineLoading ? <><RefreshCw size={14} className="animate-spin" /> جاري التوليد...</> : <><Tag size={14} /> توليد التاج لاين</>}
+          </button>
+          {taglineResult && <ResultBox result={taglineResult} />}
+        </ToolCard>
+
+        {/* 7. Pricing Calculator */}
+        <ToolCard icon={<Calculator size={22} />} color="#f97316" title="حاسبة أسعار التصميم" desc="احسب السعر المقترح لأي مشروع بناءً على التعقيد والإلحاح والمراجعات">
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-bold text-gray-500 mb-1.5">نوع التصميم</label>
+                <select value={priceType} onChange={e => setPriceType(e.target.value)} className={inputCls}>
+                  {Object.keys(PRICING_TYPES).map(t => <option key={t}>{t}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-500 mb-1.5">عدد المراجعات المسموحة</label>
+                <select value={priceRevisions} onChange={e => setPriceRevisions(Number(e.target.value))} className={inputCls}>
+                  {[1,2,3,4,5].map(n => <option key={n} value={n}>{n} مراجعة{n === 1 ? "" : n === 2 ? "ان" : "ات"}</option>)}
+                </select>
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-gray-500 mb-2">مستوى التعقيد — {["بسيط جداً","بسيط","متوسط","معقد","معقد جداً"][priceComplexity-1]}</label>
+              <input type="range" min={1} max={5} value={priceComplexity} onChange={e => setPriceComplexity(Number(e.target.value))}
+                className="w-full accent-[#f97316]" />
+              <div className="flex justify-between text-[10px] text-gray-400 mt-1">
+                <span>بسيط جداً</span><span>متوسط</span><span>معقد جداً</span>
+              </div>
+            </div>
+            <label className="flex items-center gap-2.5 cursor-pointer select-none">
+              <input type="checkbox" checked={priceUrgent} onChange={e => setPriceUrgent(e.target.checked)}
+                className="w-4 h-4 accent-[#f97316] rounded" />
+              <span className="text-sm font-bold text-gray-600">تسليم عاجل خلال 3 أيام (+50%)</span>
+            </label>
+            {(() => {
+              const { min, max } = calcPrice();
+              return (
+                <div className="rounded-2xl p-5 text-center" style={{ background: "linear-gradient(135deg,#fff7ed,#ffedd5)" }}>
+                  <p className="text-xs font-bold text-orange-400 mb-1">السعر المقترح</p>
+                  <p className="text-3xl font-black text-orange-600">{min.toLocaleString("ar-EG")} – {max.toLocaleString("ar-EG")}</p>
+                  <p className="text-sm text-orange-400 font-medium mt-0.5">جنيه مصري</p>
+                  <p className="text-[11px] text-gray-400 mt-3">هذا تقدير استرشادي • الأسعار النهائية تحدد بعد معرفة تفاصيل المشروع الكاملة</p>
+                </div>
+              );
+            })()}
+          </div>
+        </ToolCard>
+
+        {/* 8. Platform Sizes Reference */}
+        <ToolCard icon={<Ruler size={22} />} color="#7c3aed" title="مرجع مقاسات المنصات" desc="كل مقاسات السوشيال ميديا والمطبوعات في مكان واحد — جاهز للنسخ">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {PLATFORM_SIZES.map(({ platform, icon, sizes }) => (
+              <div key={platform} className="bg-gray-50 rounded-xl p-3.5 border border-gray-100">
+                <div className="flex items-center gap-2 mb-2.5">
+                  <span className="text-base">{icon}</span>
+                  <span className="font-black text-[#1a1a2e] text-sm">{platform}</span>
+                </div>
+                <div className="space-y-1.5">
+                  {sizes.map(s => (
+                    <div key={s.name} className="flex items-center justify-between text-xs">
+                      <span className="text-gray-500">{s.name}</span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-mono font-bold text-[#3730A3] text-[11px]">{s.dims}</span>
+                        {s.note !== "—" && <span className="text-gray-300 text-[10px]">{s.note}</span>}
+                        <button onClick={() => navigator.clipboard.writeText(s.dims)}
+                          className="text-gray-300 hover:text-[#3730A3] transition-colors p-0.5 rounded">
+                          <Copy size={10} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
         </ToolCard>
 
       </div>

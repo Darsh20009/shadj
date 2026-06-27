@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, Link } from "wouter";
 import { useListOrders } from "@workspace/api-client-react";
+import { getTimeGreeting } from "@/lib/greeting";
 import {
   Package, Clock, CheckCircle, LogOut, User, Home,
   PlusCircle, ChevronDown, ChevronUp, Mail, Phone,
@@ -296,8 +297,13 @@ export default function Dashboard() {
         {/* Welcome */}
         <div className="mb-8 flex items-start justify-between flex-wrap gap-4">
           <div>
-            <h1 className="text-3xl font-black text-[#1a1a2e] mb-1">أهلاً، {user.name}! 👋</h1>
-            <p className="text-gray-400 text-sm">{user.email} — تقدر تتابع كل طلباتك من هنا</p>
+            {(() => { const g = getTimeGreeting(user.name); return (
+              <>
+                <h1 className="text-3xl font-black text-[#1a1a2e] mb-1">{g.headline}</h1>
+                <p className="text-gray-400 text-sm">{g.sub}</p>
+                <p className="text-gray-300 text-xs mt-0.5">{user.email} — تابع طلباتك من هنا</p>
+              </>
+            ); })()}
           </div>
           <Link href="/order"
             className="flex items-center gap-2 bg-[#3730A3] text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-[#1a1a2e] transition-colors shadow-lg shadow-[#3730A3]/20">

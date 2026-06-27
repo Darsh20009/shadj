@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { chatWithAI, generateDesignBrief, generateCreativeIdeas, generateColorPalette, generateSocialContent, generateBrandAnalysis } from "../lib/ai";
+import { chatWithAI, generateDesignBrief, generateCreativeIdeas, generateColorPalette, generateSocialContent, generateBrandAnalysis, generateTagline } from "../lib/ai";
 import { logger } from "../lib/logger";
 
 const router = Router();
@@ -77,6 +77,18 @@ router.post("/brand-analysis", async (req, res) => {
   } catch (err: any) {
     logger.error(err, "Brand analysis failed");
     res.status(500).json({ error: "خطأ في تحليل البراند" });
+  }
+});
+
+router.post("/tagline", async (req, res) => {
+  try {
+    const { brandName, industry, tone } = req.body;
+    if (!brandName || !industry || !tone) return void res.status(400).json({ error: "جميع الحقول مطلوبة" });
+    const result = await generateTagline({ brandName, industry, tone });
+    res.json({ result });
+  } catch (err: any) {
+    logger.error(err, "Tagline generation failed");
+    res.status(500).json({ error: "خطأ في توليد التاج لاين" });
   }
 });
 
