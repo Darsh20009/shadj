@@ -5,6 +5,7 @@ import {
   Package, Clock, CheckCircle, LogOut, User, Home,
   PlusCircle, ChevronDown, ChevronUp, Mail, Phone,
   Calendar, DollarSign, FileText, Link2, AlertCircle,
+  MessageSquare, Bell,
 } from "lucide-react";
 
 interface UserData {
@@ -12,6 +13,17 @@ interface UserData {
   name: string;
   email: string;
   role: string;
+}
+
+interface Message {
+  id: string;
+  subject: string;
+  content: string;
+  fromName: string;
+  fromEmail: string;
+  toEmail: string;
+  read: boolean;
+  createdAt: string;
 }
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; border: string; dot: string; step: number }> = {
@@ -44,7 +56,7 @@ function StatusTimeline({ status }: { status: string }) {
         const active = cfg.step === i + 1;
         return (
           <div key={i} className="flex items-center gap-1 flex-1">
-            <div className={`flex flex-col items-center flex-1 ${i === 0 ? "" : ""}`}>
+            <div className={`flex flex-col items-center flex-1`}>
               <div className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-black transition-all ${
                 done   ? "bg-green-500 text-white"
                 : active ? "bg-[#3730A3] text-white shadow-md shadow-[#3730A3]/30"
@@ -76,7 +88,6 @@ function OrderCard({ order }: { order: any }) {
 
   return (
     <div className={`border rounded-2xl overflow-hidden transition-all ${open ? "border-[#3730A3]/30 shadow-md" : "border-gray-100"}`}>
-      {/* Card header */}
       <button
         type="button"
         onClick={() => setOpen(o => !o)}
@@ -98,7 +109,6 @@ function OrderCard({ order }: { order: any }) {
         </div>
       </button>
 
-      {/* Expanded details */}
       {open && (
         <div className="px-5 pb-5 border-t border-gray-100 bg-gray-50/30">
           <StatusTimeline status={order.status} />
@@ -146,20 +156,82 @@ function Detail({ icon, label, value, multiline = false }: { icon: React.ReactNo
   );
 }
 
+function MessageCard({ msg, token, onRead }: { msg: Message; token: string; onRead: (id: string) => void }) {
+  const [open, setOpen] = useState(false);
+
+  const handleOpen = () => {
+    setOpen(o => !o);
+    if (!msg.read && !open) {
+      fetch(`/api/messages/${msg.id}/read`, {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}` },
+      }).then(() => onRead(msg.id)).catch(() => {});
+    }
+  };
+
+  const date = new Date(msg.createdAt).toLocaleDateString("ar-EG", {
+    year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit",
+  });
+
+  return (
+    <div className={`border rounded-2xl overflow-hidden transition-all ${!msg.read ? "border-[#3730A3]/30 bg-[#3730A3]/2" : "border-gray-100"}`}>
+      <button
+        type="button"
+        onClick={handleOpen}
+        className="w-full px-5 py-4 flex items-center gap-4 text-right hover:bg-gray-50/70 transition-colors">
+        <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${msg.read ? "bg-gray-300" : "bg-[#3730A3] animate-pulse"}`} />
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className={`text-sm font-bold ${msg.read ? "text-gray-700" : "text-[#1a1a2e]"}`}>{msg.subject}</span>
+            {!msg.read && (
+              <span className="text-[10px] bg-[#3730A3] text-white px-2 py-0.5 rounded-full font-bold">جديد</span>
+            )}
+          </div>
+          <p className="text-gray-400 text-xs mt-0.5">من {msg.fromName} • {date}</p>
+        </div>
+        {open ? <ChevronUp size={16} className="text-gray-400 shrink-0" /> : <ChevronDown size={16} className="text-gray-400 shrink-0" />}
+      </button>
+
+      {open && (
+        <div className="px-5 pb-5 border-t border-gray-100 bg-gray-50/30">
+          <div className="mt-4 bg-white border border-gray-100 rounded-xl p-4">
+            <p className="text-sm text-[#1a1a2e] leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+          </div>
+          <p className="text-xs text-gray-400 mt-3 text-left" dir="ltr">{date}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function Dashboard() {
   const [, navigate] = useLocation();
   const [user, setUser] = useState<UserData | null>(null);
   const [ready, setReady] = useState(false);
+  const [token, setToken] = useState("");
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [msgsLoading, setMsgsLoading] = useState(false);
 
   useEffect(() => {
-    const token    = localStorage.getItem("shadj_token");
+    const t    = localStorage.getItem("shadj_token") || "";
     const userData = localStorage.getItem("shadj_user");
-    if (!token || !userData) { navigate("/login"); return; }
+    if (!t || !userData) { navigate("/login"); return; }
     const parsed   = JSON.parse(userData);
     if (["admin", "designer", "writer"].includes(parsed.role)) { navigate("/admin"); return; }
     setUser(parsed);
+    setToken(t);
     setReady(true);
   }, [navigate]);
+
+  useEffect(() => {
+    if (!token) return;
+    setMsgsLoading(true);
+    fetch("/api/messages", { headers: { Authorization: `Bearer ${token}` } })
+      .then(r => r.ok ? r.json() : [])
+      .then(data => setMessages(Array.isArray(data) ? data : []))
+      .catch(() => {})
+      .finally(() => setMsgsLoading(false));
+  }, [token]);
 
   const { data: orders = [], isLoading } = useListOrders({ query: { enabled: ready } } as any);
 
@@ -169,12 +241,17 @@ export default function Dashboard() {
     navigate("/login");
   }
 
+  function markRead(id: string) {
+    setMessages(prev => prev.map(m => m.id === id ? { ...m, read: true } : m));
+  }
+
   if (!user) return null;
 
   const total     = orders.length;
   const pending   = orders.filter(o => o.status === "pending").length;
   const inProg    = orders.filter(o => ["in_progress", "in-progress"].includes(o.status)).length;
   const completed = orders.filter(o => o.status === "completed").length;
+  const unreadMsgs = messages.filter(m => !m.read).length;
 
   const stats = [
     { label: "إجمالي الطلبات", value: total,     color: "text-[#3730A3]",  bg: "bg-[#3730A3]/5"  },
@@ -194,6 +271,14 @@ export default function Dashboard() {
           <span className="text-white/40 text-xs hidden sm:block">لوحة العميل</span>
         </div>
         <div className="flex items-center gap-2">
+          {unreadMsgs > 0 && (
+            <div className="relative">
+              <div className="flex items-center gap-1.5 bg-[#3730A3] border border-[#3730A3]/60 rounded-full px-3 py-1.5">
+                <Bell size={13} className="text-[#F5E6C8]" />
+                <span className="text-xs font-bold text-white">{unreadMsgs} رسالة جديدة</span>
+              </div>
+            </div>
+          )}
           <div className="hidden sm:flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-3 py-1.5">
             <User size={13} className="text-[#F5E6C8]" />
             <span className="text-xs font-medium text-white">{user.name}</span>
@@ -230,6 +315,37 @@ export default function Dashboard() {
             </div>
           ))}
         </div>
+
+        {/* Messages section */}
+        {(messages.length > 0 || msgsLoading) && (
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-6">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+              <div className="flex items-center gap-2">
+                <MessageSquare size={18} className="text-[#3730A3]" />
+                <h2 className="font-black text-[#1a1a2e]">رسائل الفريق</h2>
+                {unreadMsgs > 0 && (
+                  <span className="bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full">
+                    {unreadMsgs}
+                  </span>
+                )}
+              </div>
+              <span className="text-xs text-gray-400">{messages.length} رسالة</span>
+            </div>
+
+            {msgsLoading ? (
+              <div className="py-10 text-center">
+                <div className="w-6 h-6 border-2 border-[#3730A3] border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+                <p className="text-gray-400 text-xs">جاري التحميل...</p>
+              </div>
+            ) : (
+              <div className="p-4 space-y-3">
+                {messages.map(msg => (
+                  <MessageCard key={msg.id} msg={msg} token={token} onRead={markRead} />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Orders list */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-6">
@@ -272,10 +388,10 @@ export default function Dashboard() {
             <p className="text-white/60 text-sm">فريقنا جاهز للرد على أي استفسار</p>
           </div>
           <div className="flex gap-3">
-            <a href="https://wa.me/201129085243?text=%D8%A3%D9%87%D9%84%D8%A7%D9%8B%2C+%D9%85%D8%AD%D8%AA%D8%A7%D8%AC+%D9%85%D8%B3%D8%A7%D8%B9%D8%AF%D8%A9+%D9%85%D9%86+%D8%B4%D9%8E%D8%AF%D8%AC" target="_blank" rel="noopener noreferrer"
+            <a href={`mailto:gfx@shadj-graphics.space?subject=استفسار من ${encodeURIComponent(user.name)}`}
               className="flex items-center gap-2 bg-white/10 border border-white/20 text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-white/20 transition-colors">
-              <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-              واتساب
+              <Mail size={14} />
+              راسلنا
             </a>
             <Link href="/order"
               className="flex items-center gap-2 bg-[#F5E6C8] text-[#1a1a2e] px-5 py-2.5 rounded-xl text-sm font-black hover:bg-white transition-colors">

@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useQueryClient } from "@tanstack/react-query";
 import { getListOrdersQueryKey } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
-import { Search, Calendar, DollarSign, ChevronDown, ChevronUp, Copy, Check, Phone } from "lucide-react";
+import { Search, Calendar, DollarSign, ChevronDown, ChevronUp, Copy, Check, Phone, Send, X } from "lucide-react";
 
 const STATUS: Record<string, { label: string; color: string }> = {
   pending:     { label: "قيد الانتظار",  color: "bg-amber-100 text-amber-800 border-amber-200" },
@@ -28,6 +28,132 @@ function CopyButton({ text }: { text: string }) {
   );
 }
 
+interface QuickMsgModal {
+  toEmail: string;
+  toName: string;
+  orderId: string;
+  designType: string;
+}
+
+function QuickMessageModal({ data, onClose }: { data: QuickMsgModal; onClose: () => void }) {
+  const { toast } = useToast();
+  const [subject, setSubject] = useState(`بخصوص طلبك: ${data.designType}`);
+  const [content, setContent] = useState("");
+  const [sending, setSending] = useState(false);
+
+  const TEMPLATES = [
+    {
+      label: "استلام الطلب",
+      subject: `تم استلام طلبك: ${data.designType}`,
+      body: `أهلاً ${data.toName}! 👋\n\nأردنا أن نُعلمك أنه تم استلام طلبك (${data.designType}) بنجاح، وفريقنا يراجعه الآن.\n\nسنتواصل معك قريباً بمزيد من التفاصيل.\n\nشكراً لثقتك في شَدِج 🎨`,
+    },
+    {
+      label: "بدء التنفيذ",
+      subject: `بدأنا العمل على تصميمك: ${data.designType}`,
+      body: `أهلاً ${data.toName}! 🎨\n\nيسعدنا إخبارك أن فريقنا بدأ العمل على تصميمك (${data.designType}).\n\nسنرسل لك النتائج فور الانتهاء. يمكنك متابعة الحالة من لوحة التحكم.\n\nفريق شَدِج للجرافيكس`,
+    },
+    {
+      label: "اكتمال التصميم",
+      subject: `✅ تم إنجاز تصميمك: ${data.designType}`,
+      body: `أهلاً ${data.toName}! 🎉\n\nيسعدنا إخبارك بأن تصميمك (${data.designType}) قد اكتمل!\n\nيُرجى مراجعة البريد الإلكتروني لاستلام الملفات، أو تواصل معنا إذا أردت أي تعديلات.\n\nشكراً لاختيارك شَدِج 🌟`,
+    },
+    {
+      label: "طلب معلومات إضافية",
+      subject: `نحتاج بعض المعلومات بخصوص: ${data.designType}`,
+      body: `أهلاً ${data.toName}!\n\nبخصوص طلبك (${data.designType}), نود الاستفسار عن بعض التفاصيل لنتمكن من تقديم أفضل نتيجة.\n\nالرجاء الرد على هذه الرسالة أو التواصل معنا.\n\nفريق شَدِج`,
+    },
+  ];
+
+  async function handleSend() {
+    if (!subject.trim() || !content.trim()) {
+      toast({ title: "الموضوع والمحتوى مطلوبان", variant: "destructive" });
+      return;
+    }
+    setSending(true);
+    try {
+      const token = localStorage.getItem("shadj_token") || "";
+      const res = await fetch("/api/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ toEmail: data.toEmail, toName: data.toName, subject, content, orderId: data.orderId }),
+      });
+      if (!res.ok) throw new Error();
+      toast({ title: "✅ تم إرسال الرسالة بنجاح" });
+      onClose();
+    } catch {
+      toast({ title: "❌ فشل الإرسال", variant: "destructive" });
+    } finally {
+      setSending(false);
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" dir="rtl">
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-[#0f0e1a] text-white">
+          <div>
+            <h2 className="font-black text-base">إرسال رسالة</h2>
+            <p className="text-xs text-gray-400 mt-0.5">{data.toName} — {data.toEmail}</p>
+          </div>
+          <button onClick={onClose} className="text-gray-400 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-colors">
+            <X size={18} />
+          </button>
+        </div>
+
+        <div className="p-5 space-y-4">
+          <div>
+            <p className="text-xs text-gray-400 font-bold mb-2">قوالب سريعة:</p>
+            <div className="flex flex-wrap gap-2">
+              {TEMPLATES.map((t, i) => (
+                <button key={i} onClick={() => { setSubject(t.subject); setContent(t.body); }}
+                  className="text-xs bg-[#3730A3]/5 hover:bg-[#3730A3]/10 text-[#3730A3] font-medium px-3 py-1.5 rounded-lg border border-[#3730A3]/15 transition-colors">
+                  {t.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-gray-600 mb-1.5">الموضوع</label>
+            <input
+              value={subject} onChange={e => setSubject(e.target.value)}
+              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#3730A3] focus:ring-2 focus:ring-[#3730A3]/10"
+              placeholder="موضوع الرسالة..."
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-gray-600 mb-1.5">المحتوى</label>
+            <textarea
+              value={content} onChange={e => setContent(e.target.value)}
+              rows={6}
+              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#3730A3] focus:ring-2 focus:ring-[#3730A3]/10 resize-none"
+              placeholder="اكتب رسالتك هنا..."
+            />
+          </div>
+
+          <div className="flex gap-3 pt-2">
+            <button onClick={handleSend} disabled={sending}
+              className="flex-1 flex items-center justify-center gap-2 bg-[#3730A3] hover:bg-[#1a1a2e] disabled:opacity-60 text-white py-2.5 rounded-xl font-bold text-sm transition-colors">
+              {sending ? (
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <Send size={15} />
+              )}
+              {sending ? "جاري الإرسال..." : "إرسال الرسالة"}
+            </button>
+            <button onClick={onClose}
+              className="px-5 py-2.5 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium text-sm transition-colors">
+              إلغاء
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function AdminOrders() {
   const { data: orders = [], isLoading } = useListOrders();
   const updateOrder = useUpdateOrder();
@@ -36,6 +162,7 @@ export default function AdminOrders() {
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [msgModal, setMsgModal] = useState<QuickMsgModal | null>(null);
 
   const handleStatusChange = (id: string, newStatus: string) => {
     updateOrder.mutate({ id, data: { status: newStatus } } as any, {
@@ -78,6 +205,8 @@ export default function AdminOrders() {
 
   return (
     <div className="p-6 md:p-8 max-w-7xl" dir="rtl">
+      {msgModal && <QuickMessageModal data={msgModal} onClose={() => setMsgModal(null)} />}
+
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-black text-[#1a1a2e]">إدارة الطلبات</h1>
@@ -195,14 +324,22 @@ export default function AdminOrders() {
                         </SelectContent>
                       </Select>
 
-                      {!order.clientPhone && (
-                        <a href={`https://wa.me/201129085243?text=${encodeURIComponent(`طلب جديد من ${order.clientName} — ${order.designType}`)}`}
-                          target="_blank" rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1ebe5a] text-white px-4 py-2 rounded-xl font-bold text-sm transition-colors">
-                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                          واتساب
-                        </a>
-                      )}
+                      {/* Quick send message button */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setMsgModal({
+                            toEmail: order.clientEmail || "",
+                            toName: order.clientName || "",
+                            orderId: order.id,
+                            designType: order.designType || "",
+                          });
+                        }}
+                        className="inline-flex items-center gap-2 bg-[#3730A3] hover:bg-[#1a1a2e] text-white px-4 py-2 rounded-xl font-bold text-sm transition-colors"
+                      >
+                        <Send size={14} />
+                        إرسال رسالة
+                      </button>
 
                       {order.clientPhone && (() => {
                         const clean = String(order.clientPhone).replace(/\s|-/g, "").replace(/^00/, "+").replace(/^\+/, "");

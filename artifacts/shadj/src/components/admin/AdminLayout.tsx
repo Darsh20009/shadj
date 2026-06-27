@@ -1,8 +1,23 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { Link, useLocation } from "wouter";
 import { useGetMe, useLogout } from "@workspace/api-client-react";
 import { LayoutDashboard, Image as ImageIcon, ShoppingBag, Users, BarChart3, LogOut, Loader2, ExternalLink, Menu, Mail, Sparkles } from "lucide-react";
 import { AdminWelcomeJoke } from "./AdminWelcomeJoke";
+
+function useUnreadCount(token: string | null) {
+  const [count, setCount] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  useEffect(() => {
+    if (!token) return;
+    const fetch_ = () =>
+      fetch("/api/messages/unread-count", { headers: { Authorization: `Bearer ${token}` } })
+        .then(r => r.json()).then(d => setCount(d.count ?? 0)).catch(() => {});
+    fetch_();
+    timerRef.current = setInterval(fetch_, 30_000);
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [token]);
+  return count;
+}
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {
   const [location, setLocation] = useLocation();
@@ -45,14 +60,16 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
     return <AdminWelcomeJoke name={user.name} onEnter={handleJokeEnter} />;
   }
 
+  const unreadCount = useUnreadCount(localStorage.getItem("shadj_token"));
+
   const navItems = [
-    { href: "/admin", label: "لوحة التحكم", icon: LayoutDashboard },
-    { href: "/admin/portfolio", label: "الأعمال", icon: ImageIcon },
-    { href: "/admin/orders", label: "الطلبات", icon: ShoppingBag },
-    { href: "/admin/messages", label: "المراسلات", icon: Mail },
-    { href: "/admin/ai-tools", label: "أدوات الذكاء الاصطناعي", icon: Sparkles },
-    { href: "/admin/users", label: "المستخدمين", icon: Users },
-    { href: "/admin/analytics", label: "الإحصائيات", icon: BarChart3 },
+    { href: "/admin", label: "لوحة التحكم", icon: LayoutDashboard, badge: 0 },
+    { href: "/admin/portfolio", label: "الأعمال", icon: ImageIcon, badge: 0 },
+    { href: "/admin/orders", label: "الطلبات", icon: ShoppingBag, badge: 0 },
+    { href: "/admin/messages", label: "المراسلات", icon: Mail, badge: unreadCount },
+    { href: "/admin/ai-tools", label: "أدوات الذكاء الاصطناعي", icon: Sparkles, badge: 0 },
+    { href: "/admin/users", label: "المستخدمين", icon: Users, badge: 0 },
+    { href: "/admin/analytics", label: "الإحصائيات", icon: BarChart3, badge: 0 },
   ];
 
   const handleLogout = () => {
@@ -92,7 +109,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
 
       {/* Nav */}
       <nav className="flex-1 px-3 py-4 space-y-1">
-        {navItems.map(({ href, label, icon: Icon }) => {
+        {navItems.map(({ href, label, icon: Icon, badge }) => {
           const isActive = location === href;
           return (
             <Link
@@ -106,8 +123,13 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
               }`}
             >
               <Icon size={18} />
-              {label}
-              {isActive && <div className="mr-auto w-1.5 h-1.5 rounded-full bg-[#F5E6C8]" />}
+              <span className="flex-1">{label}</span>
+              {badge > 0 && (
+                <span className="min-w-[20px] h-5 px-1.5 rounded-full bg-red-500 text-white text-[10px] font-black flex items-center justify-center leading-none shadow-md">
+                  {badge > 99 ? "99+" : badge}
+                </span>
+              )}
+              {isActive && badge === 0 && <div className="w-1.5 h-1.5 rounded-full bg-[#F5E6C8]" />}
             </Link>
           );
         })}
