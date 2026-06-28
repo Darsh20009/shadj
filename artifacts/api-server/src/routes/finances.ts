@@ -51,9 +51,12 @@ router.get("/transactions", requireAdmin, async (_req, res) => {
   res.json(transactions);
 });
 
-router.post("/transactions", requireAdmin, async (req, res) => {
+router.post("/transactions", requireAdmin, async (req, res): Promise<void> => {
   const { amount, description, type = "income", orderId, date } = req.body;
-  if (!amount || !description) return res.status(400).json({ error: "amount و description مطلوبان" });
+  if (!amount || !description) {
+    res.status(400).json({ error: "amount و description مطلوبان" });
+    return;
+  }
   const t = await Transaction.create({ amount: Number(amount), description, type, orderId, date: date ? new Date(date) : new Date() });
   res.status(201).json(t);
 });

@@ -1,0 +1,85 @@
+Search
+Command+
+K
+
+New
+
+Upgrade
+
+
+s
+Environment
+shadj
+Events
+Settings
+Monitor
+Logs
+Metrics
+Manage
+Environment
+Shell
+Scaling
+Previews
+Disk
+One-Off Jobs
+
+Changelog
+Invite a friend
+
+Contact support
+Render Status
+Web Service
+shadj
+Node
+Free
+Upgrade your instance
+
+Connect
+
+Manual Deploy
+Service ID:
+srv-d8r8fq7avr4c73e84djg
+
+Darsh20009 / shadj
+main
+shadj-graphics.space
+
+Your free instance will spin down with inactivity, which can delay requests by 50 seconds or more.
+Upgrade now
+June 28, 2026 at 7:14 PM
+failed
+1a812f6
+Saved progress at the end of the loop Replit-Commit-Author: Agent Replit-Commit-Session-Id: c7799068-3393-4d4a-b781-c10d81fbddb2 Replit-Commit-Checkpoint-Type: full_checkpoint Replit-Commit-Event-Id: 202f3fe5-3e07-414e-8338-a3d157224216 Replit-Commit-Screenshot-Url: https://storage.googleapis.com/screenshot-production-us-central1/24c17b56-a982-4076-a3c5-44e8d34cbb35/c7799068-3393-4d4a-b781-c10d81fbddb2/roepexY Replit-Helium-Checkpoint-Created: true
+
+Rollback
+Exited with status 2 while building your code.
+Read our docs for common ways to troubleshoot your deploy.
+
+All logs
+Search
+Search logs
+
+Live tail
+
+
+
+==> Downloading cache...
+==> Cloning from https://github.com/Darsh20009/shadj
+==> Checking out commit 1a812f6518ba5f3eff9e632318f11e25db8030c7 in branch main
+==> Downloaded 101MB in 3s. Extraction took 5s.
+==> Using Node.js version 24.14.1 (default)
+==> Docs on specifying a Node.js version: https://render.com/docs/node-version
+==> Running build command 'pnpm install --frozen-lockfile; pnpm run build'...
+> workspace@0.0.0 build /opt/render/project/src
+> pnpm run typecheck && pnpm -r --filter '!@workspace/mockup-sandbox' --if-present run build
+> workspace@0.0.0 typecheck /opt/render/project/src
+> pnpm run typecheck:libs && pnpm -r --filter "./artifacts/**" --filter "./scripts" --if-present run typecheck
+> workspace@0.0.0 typecheck:libs /opt/render/project/src
+> tsc --build
+/opt/render/project/src/artifacts/api-server:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @workspace/api-server@0.0.0 typecheck: `tsc -p tsconfig.json --noEmit`
+Exit status 2
+ ELIFECYCLE  Command failed with exit code 2.
+ ELIFECYCLE  Command failed with exit code 2.
+==> Build failed 😞
+==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
